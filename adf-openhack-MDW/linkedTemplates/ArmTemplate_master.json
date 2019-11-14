@@ -1,0 +1,161 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-openhack-MDW"
+		},
+		"integrationRuntime_vanarsdel-ir": {
+			"type": "string",
+			"metadata": "Integration runtime name",
+			"defaultValue": "vanarsdel-ir"
+		},
+		"ADLS_Storage_Southridge_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ADLS_Storage_Southridge'"
+		},
+		"CloudStreaming_Sqldb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CloudStreaming_Sqldb'"
+		},
+		"Cloudsales_Sqldb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Cloudsales_Sqldb'"
+		},
+		"CosmosDb1_Movie_Catalog_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDb1_Movie_Catalog'"
+		},
+		"OrderDetails_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'OrderDetails'"
+		},
+		"Orders_Cloudsales_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'Orders_Cloudsales'"
+		},
+		"SalesOrders_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'SalesOrders'"
+		},
+		"Vanarsdel_SQLDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Vanarsdel_SQLDB'"
+		},
+		"Vanarsdel_SQLDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Vanarsdel_SQLDB'"
+		},
+		"OrderDetails_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"Orders_Cloudsales_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"SalesOrders_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"Vanarsdel_SQLDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "openhackadmin"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"integrationRuntime_vanarsdel-ir": {
+						"value": "[parameters('integrationRuntime_vanarsdel-ir')]"
+					},
+					"ADLS_Storage_Southridge_connectionString": {
+						"value": "[parameters('ADLS_Storage_Southridge_connectionString')]"
+					},
+					"CloudStreaming_Sqldb_connectionString": {
+						"value": "[parameters('CloudStreaming_Sqldb_connectionString')]"
+					},
+					"Cloudsales_Sqldb_connectionString": {
+						"value": "[parameters('Cloudsales_Sqldb_connectionString')]"
+					},
+					"CosmosDb1_Movie_Catalog_connectionString": {
+						"value": "[parameters('CosmosDb1_Movie_Catalog_connectionString')]"
+					},
+					"OrderDetails_accountKey": {
+						"value": "[parameters('OrderDetails_accountKey')]"
+					},
+					"Orders_Cloudsales_accountKey": {
+						"value": "[parameters('Orders_Cloudsales_accountKey')]"
+					},
+					"SalesOrders_accountKey": {
+						"value": "[parameters('SalesOrders_accountKey')]"
+					},
+					"OrderDetails_properties_typeProperties_url": {
+						"value": "[parameters('OrderDetails_properties_typeProperties_url')]"
+					},
+					"Orders_Cloudsales_properties_typeProperties_url": {
+						"value": "[parameters('Orders_Cloudsales_properties_typeProperties_url')]"
+					},
+					"SalesOrders_properties_typeProperties_url": {
+						"value": "[parameters('SalesOrders_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"Vanarsdel_SQLDB_connectionString": {
+						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
+					},
+					"Vanarsdel_SQLDB_password": {
+						"value": "[parameters('Vanarsdel_SQLDB_password')]"
+					},
+					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
+						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_0')]"
+			]
+		}
+	]
+}

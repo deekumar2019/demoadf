@@ -1,0 +1,51 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-openhack-MDW"
+		},
+		"integrationRuntime_vanarsdel-ir": {
+			"value": "vanarsdel-ir"
+		},
+		"ADLS_Storage_Southridge_connectionString": {
+			"value": ""
+		},
+		"CloudStreaming_Sqldb_connectionString": {
+			"value": ""
+		},
+		"Cloudsales_Sqldb_connectionString": {
+			"value": ""
+		},
+		"CosmosDb1_Movie_Catalog_connectionString": {
+			"value": ""
+		},
+		"OrderDetails_accountKey": {
+			"value": ""
+		},
+		"Orders_Cloudsales_accountKey": {
+			"value": ""
+		},
+		"SalesOrders_accountKey": {
+			"value": ""
+		},
+		"Vanarsdel_SQLDB_connectionString": {
+			"value": ""
+		},
+		"Vanarsdel_SQLDB_password": {
+			"value": ""
+		},
+		"OrderDetails_properties_typeProperties_url": {
+			"value": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"Orders_Cloudsales_properties_typeProperties_url": {
+			"value": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"SalesOrders_properties_typeProperties_url": {
+			"value": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"Vanarsdel_SQLDB_properties_typeProperties_userName": {
+			"value": "openhackadmin"
+		}
+	}
+}
