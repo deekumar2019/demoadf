@@ -1614,7 +1614,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "dataflow1",
+						"name": "dataflow_allsources",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
