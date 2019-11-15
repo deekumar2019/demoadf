@@ -1,5 +1,5 @@
 {
-	"name": "Salesdataflow",
+	"name": "Salesdataflow_Pipeline",
 	"properties": {
 		"activities": [
 			{
