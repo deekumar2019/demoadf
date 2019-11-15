@@ -9,7 +9,7 @@
 						"referenceName": "Southridge_Streaming",
 						"type": "DatasetReference"
 					},
-					"name": "southridgestreaming"
+					"name": "SouthridgeStreaming"
 				}
 			],
 			"sinks": [
@@ -29,7 +29,7 @@
 					"name": "StreamingConformed"
 				}
 			],
-			"script": "\n\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as timestamp,\n\t\tStreamEnd as timestamp,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> southridgestreaming\nsouthridgestreaming derive(SourceID = 1,\n\t\tUniqueOrderID = concat('1',TransactionID),\n\t\tUniqueMovieID = concat('1',MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID)) ~> NewColsAdded\nNewColsAdded select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tStreamStart,\n\t\tStreamEnd,\n\t\tSourceID,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> StreamingConformed\nStreamingConformed sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Streaming"
+			"script": "\n\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as timestamp,\n\t\tStreamEnd as timestamp,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> SouthridgeStreaming\nSouthridgeStreaming derive(SourceID = 1,\n\t\tUniqueOrderID = concat('1',TransactionID),\n\t\tUniqueMovieID = concat('1',MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID)) ~> NewColsAdded\nNewColsAdded select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tStreamStart,\n\t\tStreamEnd,\n\t\tSourceID,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> StreamingConformed\nStreamingConformed sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Streaming"
 		}
 	}
 }
