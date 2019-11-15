@@ -1,0 +1,20 @@
+{
+	"name": "Streaming_dataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Southridge_Streaming",
+						"type": "DatasetReference"
+					},
+					"name": "southridgestreaming"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"script": "\n\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as timestamp,\n\t\tStreamEnd as timestamp,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> southridgestreaming"
+		}
+	}
+}
