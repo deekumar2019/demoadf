@@ -25,6 +25,62 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Orders')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Orders_Cloudsales",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboOrders.txt",
+						"folderPath": "cloudsales",
+						"fileSystem": "landed"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "OrderID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "OrderDate",
+						"type": "String"
+					},
+					{
+						"name": "ShipDate",
+						"type": "String"
+					},
+					{
+						"name": "TotalCost",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SalesOrders')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -301,51 +357,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/adls2_storage')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ADLS_Storage_Southridge",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Vanarsdel_SQLDB')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"connectionString": "[parameters('Vanarsdel_SQLDB_connectionString')]",
-					"userName": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('Vanarsdel_SQLDB_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "[parameters('integrationRuntime_vanarsdel-ir')]",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/VanArsDelStreaming')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -414,70 +425,47 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FourthCoffeeStreaming')]",
+			"name": "[concat(parameters('factoryName'), '/adls2_storage')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "OrderDetails",
+					"referenceName": "ADLS_Storage_Southridge",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "Transactions.csv",
-						"folderPath": "fourthcoffee",
-						"fileSystem": "landed"
+						"type": "AzureBlobStorageLocation"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
-					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
-				"schema": [
-					{
-						"name": "TransactionID",
-						"type": "String"
-					},
-					{
-						"name": "CustomerID",
-						"type": "String"
-					},
-					{
-						"name": "MovieID",
-						"type": "String"
-					},
-					{
-						"name": "RentalDate",
-						"type": "String"
-					},
-					{
-						"name": "ReturnDate",
-						"type": "String"
-					},
-					{
-						"name": "RentalCost",
-						"type": "String"
-					},
-					{
-						"name": "LateFee",
-						"type": "String"
-					},
-					{
-						"name": "RewindFlag",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
-						"type": "String"
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Vanarsdel_SQLDB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('Vanarsdel_SQLDB_connectionString')]",
+					"userName": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Vanarsdel_SQLDB_password')]"
 					}
-				]
+				},
+				"connectVia": {
+					"referenceName": "[parameters('integrationRuntime_vanarsdel-ir')]",
+					"type": "IntegrationRuntimeReference"
+				}
 			},
 			"dependsOn": []
 		},
@@ -1039,6 +1027,7 @@
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Orders')]",
 				"[concat(variables('factoryId'), '/datasets/SalesOrders')]"
 			]
 		},
@@ -1107,13 +1096,12 @@
 							"name": "UnionAllConformed"
 						}
 					],
-					"script": "\n\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as date,\n\t\tStreamEnd as date,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> SouthridgeStreaming\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as string,\n\t\tReturnDate as string,\n\t\tRentalCost as string,\n\t\tLateFee as string,\n\t\tRewindFlag as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> VanArsDelStreaming\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as string,\n\t\tReturnDate as string,\n\t\tRentalCost as string,\n\t\tLateFee as string,\n\t\tRewindFlag as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> FourthCoffeeStreaming\nSouthridgeStreaming derive(SourceID = 1,\n\t\tUniqueOrderID = concat('1',TransactionID),\n\t\tUniqueMovieID = concat('1',MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID)) ~> NewColsAdded\nNewColsAdded select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tStreamStart,\n\t\tStreamEnd,\n\t\tSourceID,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> StreamingConformed\nVanArsDelStreaming derive(SourceID = 2,\n\t\tUniqueOrderID = concat('2',TransactionID),\n\t\tUniqueMovieID = concat('2'+MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID),\n\t\tStreamStart = toDate(concat(left(RentalDate,4),'-',substring(RentalDate, 5, 2),'-',substring(RentalDate,7,2))),\n\t\tStreamEnd = toDate(concat(left(ReturnDate,4),'-',substring(ReturnDate, 5, 2),'-',substring(ReturnDate,7,2)))) ~> NewColsVAnArsdel\nNewColsVAnArsdel select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tSourceID,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID,\n\t\tStreamStart,\n\t\tStreamEnd\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> VanArsDelConformed\nFourthCoffeeStreaming derive(SourceID = 3,\n\t\tUniqueOrderID = concat('3',TransactionID),\n\t\tUniqueMovieID = concat('3',MovieID),\n\t\tUniqueCustomerID = concat('3',CustomerID),\n\t\tStreamStart = toDate(concat(left(RentalDate,4),'-',substring(RentalDate, 5, 2),'-',substring(RentalDate,7,2)))\r\n,\n\t\tStreamEnd = toDate(concat(left(ReturnDate,4),'-',substring(ReturnDate, 5, 2),'-',substring(ReturnDate,7,2)))) ~> NewColsFourthCoffee\nNewColsFourthCoffee select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tSourceID,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID,\n\t\tStreamStart,\n\t\tStreamEnd\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> FourthCoffeeConformed\nStreamingConformed, VanArsDelConformed, FourthCoffeeConformed union(byName: true)~> UnionAllConformed\nUnionAllConformed sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Streaming"
+					"script": "\n\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as timestamp,\n\t\tStreamEnd as timestamp,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> SouthridgeStreaming\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as string,\n\t\tReturnDate as string,\n\t\tRentalCost as string,\n\t\tLateFee as string,\n\t\tRewindFlag as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> VanArsDelStreaming\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as string,\n\t\tReturnDate as string,\n\t\tRentalCost as string,\n\t\tLateFee as string,\n\t\tRewindFlag as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> FourthCoffeeStreaming\nSouthridgeStreaming derive(SourceID = 1,\n\t\tUniqueOrderID = concat('1',TransactionID),\n\t\tUniqueMovieID = concat('1',MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID)) ~> NewColsAdded\nNewColsAdded select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tStreamStart,\n\t\tStreamEnd,\n\t\tSourceID,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> StreamingConformed\nVanArsDelStreaming derive(SourceID = 2,\n\t\tUniqueOrderID = concat('2',TransactionID),\n\t\tUniqueMovieID = concat('2'+MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID),\n\t\tStreamStart = toTimestamp((concat(left(RentalDate,4),'-',substring(RentalDate, 5, 2),'-',substring(RentalDate,7,2),' 00:00:00'))),\n\t\tStreamEnd = toTimestamp(concat(left(ReturnDate,4),'-',substring(ReturnDate, 5, 2),'-',substring(ReturnDate,7,2),' 00:00:00'))) ~> NewColsVAnArsdel\nNewColsVAnArsdel select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tSourceID,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID,\n\t\tStreamStart,\n\t\tStreamEnd\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> VanArsDelConformed\nFourthCoffeeStreaming derive(SourceID = 3,\n\t\tUniqueOrderID = concat('3',TransactionID),\n\t\tUniqueMovieID = concat('3',MovieID),\n\t\tUniqueCustomerID = concat('3',CustomerID),\n\t\tStreamStart = toTimestamp((concat(left(RentalDate,4),'-',substring(RentalDate, 5, 2),'-',substring(RentalDate,7,2),' 00:00:00'))),\n\t\tStreamEnd = toTimestamp(concat(left(ReturnDate,4),'-',substring(ReturnDate, 5, 2),'-',substring(ReturnDate,7,2),' 00:00:00'))) ~> NewColsFourthCoffee\nNewColsFourthCoffee select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tSourceID,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID,\n\t\tStreamStart,\n\t\tStreamEnd\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> FourthCoffeeConformed\nStreamingConformed, VanArsDelConformed, FourthCoffeeConformed union(byName: true)~> UnionAllConformed\nUnionAllConformed sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Streaming"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Southridge_Streaming')]",
 				"[concat(variables('factoryId'), '/datasets/VanArsDelStreaming')]",
-				"[concat(variables('factoryId'), '/datasets/FourthCoffeeStreaming')]",
 				"[concat(variables('factoryId'), '/datasets/Streaming')]"
 			]
 		}
