@@ -9,10 +9,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@pipeline().parameters.tableList",
+						"value": "@pipeline().parameters.SinkTableName",
 						"type": "Expression"
 					},
-					"isSequential": false,
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "LookupOldWaterMarkActivity",
@@ -140,6 +140,9 @@
 		],
 		"parameters": {
 			"SinkTableName": {
+				"type": "string"
+			},
+			"tableList": {
 				"type": "string"
 			}
 		},
