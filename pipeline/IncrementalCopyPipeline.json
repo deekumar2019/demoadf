@@ -9,10 +9,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@pipeline().parameters.SinkTableName",
+						"value": "@pipeline().parameters.tableList",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "LookupOldWaterMarkActivity",
@@ -56,6 +56,10 @@
 										"type": "Expression"
 									}
 								},
+								"dataset": {
+									"referenceName": "SourceDataset",
+									"type": "DatasetReference"
+								},
 								"firstRowOnly": true
 							}
 						},
@@ -92,8 +96,36 @@
 										"type": "Expression"
 									}
 								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"sqlWriterStoredProcedureName": {
+										"value": "@{item().StoredProcedureNameForMergeOperation}",
+										"type": "Expression"
+									},
+									"sqlWriterTableType": {
+										"value": "@{item().TableType}",
+										"type": "Expression"
+									},
+									"storedProcedureTableTypeParameterName": {
+										"value": "@{item().TABLE_NAME}",
+										"type": "Expression"
+									},
+									"disableMetricsCollection": false
+								},
 								"enableStaging": false
-							}
+							},
+							"inputs": [
+								{
+									"referenceName": "SourceDataset",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "SinkDataset",
+									"type": "DatasetReference"
+								}
+							]
 						},
 						{
 							"name": "StoredProceduretoWriteWatermarkActivity",
@@ -139,11 +171,8 @@
 			}
 		],
 		"parameters": {
-			"SinkTableName": {
-				"type": "string"
-			},
 			"tableList": {
-				"type": "string"
+				"type": "array"
 			}
 		},
 		"annotations": []
