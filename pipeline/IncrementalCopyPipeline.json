@@ -15,6 +15,13 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource"
+					},
+					"dataset": {
+						"referenceName": "WatermarkDataset",
+						"type": "DatasetReference"
+					},
 					"firstRowOnly": false
 				}
 			},
@@ -36,7 +43,7 @@
 						"sqlReaderQuery": "select MAX(LastModifytime) as NewWatermarkvalue from customer_table"
 					},
 					"dataset": {
-						"referenceName": "SourceDataset",
+						"referenceName": "Cloudsales",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": true
@@ -73,20 +80,27 @@
 						"sqlReaderQuery": "select * from customer_table where LastModifytime > '@{activity('LookupOldWaterMarkActivity').output.firstRow.WatermarkValue}' and LastModifytime <= '@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}'"
 					},
 					"sink": {
-						"type": "AzureSqlSink",
-						"disableMetricsCollection": false
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
 					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
-						"referenceName": "SourceDataset",
+						"referenceName": "Cloudsales",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "SinkDataset",
+						"referenceName": "adls2_storage",
 						"type": "DatasetReference"
 					}
 				]
