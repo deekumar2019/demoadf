@@ -1,0 +1,12 @@
+{
+	"name": "Sourcedataset_tl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Cloudsales_Sqldb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
