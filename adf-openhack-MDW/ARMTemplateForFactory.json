@@ -7,6 +7,11 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-openhack-MDW"
 		},
+		"integrationRuntime_dataflowcompute": {
+			"type": "string",
+			"metadata": "Integration runtime name",
+			"defaultValue": "dataflowcompute"
+		},
 		"integrationRuntime_vanarsdel-ir": {
 			"type": "string",
 			"metadata": "Integration runtime name",
@@ -48,6 +53,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Vanarsdel_SQLDB'"
 		},
+		"adls2_incr_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adls2_incr'"
+		},
 		"OrderDetails_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
@@ -63,6 +72,10 @@
 		"Vanarsdel_SQLDB_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "openhackadmin"
+		},
+		"adls2_incr_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfstoragedee.dfs.core.windows.net"
 		}
 	},
 	"variables": {
@@ -700,6 +713,201 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Customers_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Customers",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Customers",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CloudsalesCustomers": {},
+									"CloudsalesAddresses": {},
+									"Customers": {}
+								}
+							},
+							"staging": {}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Customers')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IncrementalCopyPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LookupOldWaterMarkActivity",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource"
+							},
+							"dataset": {
+								"referenceName": "WatermarkDataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "LookupNewWaterMarkActivity",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select MAX(LastModifytime) as NewWatermarkvalue from customer_table"
+							},
+							"dataset": {
+								"referenceName": "Cloudsales",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "IncrCopyActivity",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "LookupNewWaterMarkActivity",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "LookupOldWaterMarkActivity",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "select * from customer_table where LastModifytime > '@{activity('LookupOldWaterMarkActivity').output.firstRow.WatermarkValue}' and LastModifytime <= '@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}'",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": {
+										"value": "@{CONCAT('Incremental-', pipeline().RunId, '.txt')}",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Cloudsales",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "adls2_Incrtest",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "StoredProceduretoWriteWatermarkActivity",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "IncrCopyActivity",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_write_watermark]"
+						},
+						"linkedServiceName": {
+							"referenceName": "Cloudsales_Sqldb",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/WatermarkDataset')]",
+				"[concat(variables('factoryId'), '/datasets/Cloudsales')]",
+				"[concat(variables('factoryId'), '/datasets/adls2_Incrtest')]",
+				"[concat(variables('factoryId'), '/linkedServices/Cloudsales_Sqldb')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Salesdataflow_Pipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -794,6 +1002,154 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Cloudsales_Sqldb')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CloudsalesAddresses')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OrderDetails",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboAddresses.txt",
+						"folderPath": "cloudsales",
+						"fileSystem": "landed"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "AddressID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine1",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine2",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "ZipCode",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CloudsalesCustomers')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OrderDetails",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboCustomers.txt",
+						"folderPath": "cloudsales",
+						"fileSystem": "landed"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "LastName",
+						"type": "String"
+					},
+					{
+						"name": "FirstName",
+						"type": "String"
+					},
+					{
+						"name": "PhoneNumber",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Customers')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OrderDetails",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "Customers",
+						"fileSystem": "curated"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
 			]
 		},
 		{
@@ -1363,6 +1719,48 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SinkDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CloudStreaming_Sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "customer_table"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CloudStreaming_Sqldb')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Cloudsales_Sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "customer_table"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Cloudsales_Sqldb')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SourceDataset_14u')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1765,6 +2163,65 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/WatermarkDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Cloudsales_Sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TableName",
+						"type": "varchar"
+					},
+					{
+						"name": "WatermarkValue",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "watermarktable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Cloudsales_Sqldb')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adls2_Incrtest')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adls2_incr",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "Incrtest",
+						"fileSystem": "adftutorial"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adls2_incr')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/adls2_storage')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1917,6 +2374,42 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/adls2_incr')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('adls2_incr_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('adls2_incr_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_dataflowcompute'))]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_vanarsdel-ir'))]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
@@ -1925,6 +2418,66 @@
 				"typeProperties": {}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Customers')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CloudsalesCustomers",
+								"type": "DatasetReference"
+							},
+							"name": "CloudsalesCustomers",
+							"typeProperties": {}
+						},
+						{
+							"dataset": {
+								"referenceName": "CloudsalesAddresses",
+								"type": "DatasetReference"
+							},
+							"name": "CloudsalesAddresses",
+							"typeProperties": {}
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Customers",
+								"type": "DatasetReference"
+							},
+							"name": "Customers"
+						}
+					],
+					"transformations": [
+						{
+							"name": "NewColsAddedCloudsales"
+						},
+						{
+							"name": "NewColsAddedCloudsalesAddr"
+						},
+						{
+							"name": "CloudsalesCustomerAddr"
+						},
+						{
+							"name": "DateColumns"
+						},
+						{
+							"name": "CloudsalesCustomerAddresses"
+						}
+					],
+					"script": "\n\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CloudsalesCustomers\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CloudsalesAddresses\nCloudsalesCustomers derive(SourceID = 1,\n\t\tSourceSystemCustomerID = concat('1',CustomerID)) ~> NewColsAddedCloudsales\nCloudsalesAddresses derive(SourceID = 1,\n\t\tGlobalCustomerID = concat('1',CustomerID,AddressID)) ~> NewColsAddedCloudsalesAddr\nNewColsAddedCloudsales, NewColsAddedCloudsalesAddr join(CloudsalesCustomers@CustomerID == CloudsalesAddresses@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> CloudsalesCustomerAddr\nCloudsalesCustomerAddr derive(CustomerCreatedDate = iif(CloudsalesCustomers@CreatedDate>CloudsalesAddresses@CreatedDate,CloudsalesCustomers@CreatedDate,CloudsalesAddresses@CreatedDate),\n\t\tCustomerUpdatedDate = iif(CloudsalesCustomers@UpdatedDate>CloudsalesAddresses@UpdatedDate,CloudsalesCustomers@UpdatedDate,CloudsalesAddresses@UpdatedDate )) ~> DateColumns\nDateColumns select(mapColumn(\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tSourceSystemCustomerID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tSourceSystemIdID = NewColsAddedCloudsalesAddr@SourceID,\n\t\tGlobalCustomerID,\n\t\tCustomerCreatedDate,\n\t\tCustomerUpdatedDate\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> CloudsalesCustomerAddresses\nCloudsalesCustomerAddresses sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Customers"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CloudsalesCustomers')]",
+				"[concat(variables('factoryId'), '/datasets/CloudsalesAddresses')]",
+				"[concat(variables('factoryId'), '/datasets/Customers')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Southridge_sales_dataflow')]",
@@ -2054,253 +2607,6 @@
 				"[concat(variables('factoryId'), '/datasets/VanArsDelStreaming')]",
 				"[concat(variables('factoryId'), '/datasets/FourthCoffeeStreaming')]",
 				"[concat(variables('factoryId'), '/datasets/Streaming')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Customers')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "CloudsalesCustomers",
-								"type": "DatasetReference"
-							},
-							"name": "CloudsalesCustomers",
-							"typeProperties": {}
-						},
-						{
-							"dataset": {
-								"referenceName": "CloudsalesAddresses",
-								"type": "DatasetReference"
-							},
-							"name": "CloudsalesAddresses",
-							"typeProperties": {}
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "Customers",
-								"type": "DatasetReference"
-							},
-							"name": "Customers"
-						}
-					],
-					"transformations": [
-						{
-							"name": "NewColsAddedCloudsales"
-						},
-						{
-							"name": "NewColsAddedCloudsalesAddr"
-						},
-						{
-							"name": "CloudsalesCustomerAddr"
-						},
-						{
-							"name": "DateColumns"
-						},
-						{
-							"name": "CloudsalesCustomerAddresses"
-						}
-					],
-					"script": "\n\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CloudsalesCustomers\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CloudsalesAddresses\nCloudsalesCustomers derive(SourceID = 1,\n\t\tSourceSystemCustomerID = concat('1',CustomerID)) ~> NewColsAddedCloudsales\nCloudsalesAddresses derive(SourceID = 1,\n\t\tGlobalCustomerID = concat('1',CustomerID,AddressID)) ~> NewColsAddedCloudsalesAddr\nNewColsAddedCloudsales, NewColsAddedCloudsalesAddr join(CloudsalesCustomers@CustomerID == CloudsalesAddresses@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> CloudsalesCustomerAddr\nCloudsalesCustomerAddr derive(CustomerCreatedDate = iif(CloudsalesCustomers@CreatedDate>CloudsalesAddresses@CreatedDate,CloudsalesCustomers@CreatedDate,CloudsalesAddresses@CreatedDate),\n\t\tCustomerUpdatedDate = iif(CloudsalesCustomers@UpdatedDate>CloudsalesAddresses@UpdatedDate,CloudsalesCustomers@UpdatedDate,CloudsalesAddresses@UpdatedDate )) ~> DateColumns\nDateColumns select(mapColumn(\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tSourceSystemCustomerID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tSourceSystemIdID = NewColsAddedCloudsalesAddr@SourceID,\n\t\tGlobalCustomerID,\n\t\tCustomerCreatedDate,\n\t\tCustomerUpdatedDate\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> CloudsalesCustomerAddresses\nCloudsalesCustomerAddresses sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Customers"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/CloudsalesCustomers')]",
-				"[concat(variables('factoryId'), '/datasets/CloudsalesAddresses')]",
-				"[concat(variables('factoryId'), '/datasets/Customers')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CloudsalesCustomers')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OrderDetails",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "dboCustomers.txt",
-						"folderPath": "cloudsales",
-						"fileSystem": "landed"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "CustomerID",
-						"type": "String"
-					},
-					{
-						"name": "LastName",
-						"type": "String"
-					},
-					{
-						"name": "FirstName",
-						"type": "String"
-					},
-					{
-						"name": "PhoneNumber",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CloudsalesAddresses')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OrderDetails",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "dboAddresses.txt",
-						"folderPath": "cloudsales",
-						"fileSystem": "landed"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "AddressID",
-						"type": "String"
-					},
-					{
-						"name": "CustomerID",
-						"type": "String"
-					},
-					{
-						"name": "AddressLine1",
-						"type": "String"
-					},
-					{
-						"name": "AddressLine2",
-						"type": "String"
-					},
-					{
-						"name": "City",
-						"type": "String"
-					},
-					{
-						"name": "State",
-						"type": "String"
-					},
-					{
-						"name": "ZipCode",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Customers')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OrderDetails",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "Customers",
-						"fileSystem": "curated"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Customers_pipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Customers",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Customers",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"CloudsalesCustomers": {},
-									"CloudsalesAddresses": {},
-									"Customers": {}
-								}
-							},
-							"staging": {}
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/Customers')]"
 			]
 		}
 	]

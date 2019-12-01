@@ -7,6 +7,11 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-openhack-MDW"
 		},
+		"integrationRuntime_dataflowcompute": {
+			"type": "string",
+			"metadata": "Integration runtime name",
+			"defaultValue": "dataflowcompute"
+		},
 		"integrationRuntime_vanarsdel-ir": {
 			"type": "string",
 			"metadata": "Integration runtime name",
@@ -40,6 +45,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'SalesOrders'"
 		},
+		"adls2_incr_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adls2_incr'"
+		},
 		"OrderDetails_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
@@ -51,6 +60,10 @@
 		"SalesOrders_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"adls2_incr_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfstoragedee.dfs.core.windows.net"
 		}
 	},
 	"variables": {
@@ -161,6 +174,42 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/adls2_incr')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('adls2_incr_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('adls2_incr_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_dataflowcompute'))]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_vanarsdel-ir'))]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
@@ -186,6 +235,154 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Cloudsales_Sqldb')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CloudsalesAddresses')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OrderDetails",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboAddresses.txt",
+						"folderPath": "cloudsales",
+						"fileSystem": "landed"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "AddressID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine1",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine2",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "ZipCode",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CloudsalesCustomers')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OrderDetails",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboCustomers.txt",
+						"folderPath": "cloudsales",
+						"fileSystem": "landed"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "LastName",
+						"type": "String"
+					},
+					{
+						"name": "FirstName",
+						"type": "String"
+					},
+					{
+						"name": "PhoneNumber",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Customers')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OrderDetails",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "Customers",
+						"fileSystem": "curated"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
 			]
 		},
 		{
@@ -391,282 +588,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ADLS_Storage_Southridge')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DestinationDataset_yle')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ADLS_Storage_Southridge",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"cw_fileName": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().cw_fileName",
-							"type": "Expression"
-						},
-						"folderPath": "cloudsales",
-						"container": "landed"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ADLS_Storage_Southridge')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DestinationDataset_zkb')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ADLS_Storage_Southridge",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"cw_fileName": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().cw_fileName",
-							"type": "Expression"
-						},
-						"folderPath": "cloudstreaming",
-						"container": "landed"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ADLS_Storage_Southridge')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FourthCoffeeStreaming')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OrderDetails",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "Transactions.csv",
-						"folderPath": "fourthcoffee",
-						"fileSystem": "landed"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "TransactionID",
-						"type": "String"
-					},
-					{
-						"name": "CustomerID",
-						"type": "String"
-					},
-					{
-						"name": "MovieID",
-						"type": "String"
-					},
-					{
-						"name": "RentalDate",
-						"type": "String"
-					},
-					{
-						"name": "ReturnDate",
-						"type": "String"
-					},
-					{
-						"name": "RentalCost",
-						"type": "String"
-					},
-					{
-						"name": "LateFee",
-						"type": "String"
-					},
-					{
-						"name": "RewindFlag",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Fourthcoffee_Streaming')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OrderDetails",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "Transactions.csv",
-						"folderPath": "fourthcoffee",
-						"fileSystem": "landed"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "TransactionID",
-						"type": "String"
-					},
-					{
-						"name": "CustomerID",
-						"type": "String"
-					},
-					{
-						"name": "MovieID",
-						"type": "String"
-					},
-					{
-						"name": "RentalDate",
-						"type": "String"
-					},
-					{
-						"name": "ReturnDate",
-						"type": "String"
-					},
-					{
-						"name": "RentalCost",
-						"type": "String"
-					},
-					{
-						"name": "LateFee",
-						"type": "String"
-					},
-					{
-						"name": "RewindFlag",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OrderDetails')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OrderDetails",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "dboOrderDetails.txt",
-						"folderPath": "cloudsales",
-						"fileSystem": "landed"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "OrderDetailID",
-						"type": "String"
-					},
-					{
-						"name": "OrderID",
-						"type": "String"
-					},
-					{
-						"name": "MovieID",
-						"type": "String"
-					},
-					{
-						"name": "Quantity",
-						"type": "String"
-					},
-					{
-						"name": "UnitCost",
-						"type": "String"
-					},
-					{
-						"name": "LineNumber",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
 			]
 		}
 	]

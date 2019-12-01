@@ -7,6 +7,11 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-openhack-MDW"
 		},
+		"integrationRuntime_dataflowcompute": {
+			"type": "string",
+			"metadata": "Integration runtime name",
+			"defaultValue": "dataflowcompute"
+		},
 		"integrationRuntime_vanarsdel-ir": {
 			"type": "string",
 			"metadata": "Integration runtime name",
@@ -48,6 +53,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Vanarsdel_SQLDB'"
 		},
+		"adls2_incr_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adls2_incr'"
+		},
 		"OrderDetails_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
@@ -63,6 +72,10 @@
 		"Vanarsdel_SQLDB_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "openhackadmin"
+		},
+		"adls2_incr_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfstoragedee.dfs.core.windows.net"
 		},
 		"containerUri": {
 			"type": "string",
@@ -91,6 +104,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"integrationRuntime_dataflowcompute": {
+						"value": "[parameters('integrationRuntime_dataflowcompute')]"
+					},
 					"integrationRuntime_vanarsdel-ir": {
 						"value": "[parameters('integrationRuntime_vanarsdel-ir')]"
 					},
@@ -115,6 +131,9 @@
 					"SalesOrders_accountKey": {
 						"value": "[parameters('SalesOrders_accountKey')]"
 					},
+					"adls2_incr_accountKey": {
+						"value": "[parameters('adls2_incr_accountKey')]"
+					},
 					"OrderDetails_properties_typeProperties_url": {
 						"value": "[parameters('OrderDetails_properties_typeProperties_url')]"
 					},
@@ -123,6 +142,9 @@
 					},
 					"SalesOrders_properties_typeProperties_url": {
 						"value": "[parameters('SalesOrders_properties_typeProperties_url')]"
+					},
+					"adls2_incr_properties_typeProperties_url": {
+						"value": "[parameters('adls2_incr_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -141,15 +163,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"Vanarsdel_SQLDB_connectionString": {
-						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
-					},
-					"Vanarsdel_SQLDB_password": {
-						"value": "[parameters('Vanarsdel_SQLDB_password')]"
-					},
-					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
-						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -170,6 +183,15 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"Vanarsdel_SQLDB_connectionString": {
+						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
+					},
+					"Vanarsdel_SQLDB_password": {
+						"value": "[parameters('Vanarsdel_SQLDB_password')]"
+					},
+					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
+						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
 					}
 				}
 			},

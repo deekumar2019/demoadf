@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "adf-openhack-MDW"
 		},
+		"integrationRuntime_dataflowcompute": {
+			"value": "dataflowcompute"
+		},
 		"integrationRuntime_vanarsdel-ir": {
 			"value": "vanarsdel-ir"
 		},
@@ -35,6 +38,9 @@
 		"Vanarsdel_SQLDB_password": {
 			"value": ""
 		},
+		"adls2_incr_accountKey": {
+			"value": ""
+		},
 		"OrderDetails_properties_typeProperties_url": {
 			"value": "https://mdwstorageaccount.dfs.core.windows.net"
 		},
@@ -46,6 +52,9 @@
 		},
 		"Vanarsdel_SQLDB_properties_typeProperties_userName": {
 			"value": "openhackadmin"
+		},
+		"adls2_incr_properties_typeProperties_url": {
+			"value": "https://adfstoragedee.dfs.core.windows.net"
 		},
 		"containerUri": {
 			"value": ""
