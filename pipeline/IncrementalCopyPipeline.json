@@ -91,7 +91,7 @@
 							"type": "DelimitedTextWriteSettings",
 							"quoteAllText": true,
 							"fileExtension": {
-								"value": "@{CONCAT('Incremental-', pipeline().RunId, '.txt')}",
+								"value": "@{CONCAT('Incremental-', activity('LookupOldWaterMarkActivity').output.firstRow.TableName, '.txt')}",
 								"type": "Expression"
 							}
 						}
