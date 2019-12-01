@@ -1,0 +1,22 @@
+{
+	"name": "adls2_Incrtest",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adls2_incr",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Incrtest",
+				"fileSystem": "adftutorial"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
