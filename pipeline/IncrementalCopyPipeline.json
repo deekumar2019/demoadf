@@ -37,7 +37,8 @@
 								"dataset": {
 									"referenceName": "SinkDataset",
 									"type": "DatasetReference"
-								}
+								},
+								"firstRowOnly": false
 							}
 						},
 						{
