@@ -33,6 +33,10 @@
 										"value": "select * from watermarktable where TableName  =  '@{item().TABLE_NAME}'",
 										"type": "Expression"
 									}
+								},
+								"dataset": {
+									"referenceName": "SinkDataset",
+									"type": "DatasetReference"
 								}
 							}
 						},
@@ -60,7 +64,7 @@
 									"referenceName": "SourceDataset",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": true
+								"firstRowOnly": false
 							}
 						},
 						{
