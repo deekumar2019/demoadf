@@ -368,12 +368,19 @@
 					"referenceName": "CloudStreaming_Sqldb",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"SinkTableName": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [],
 				"typeProperties": {
-					"schema": "dbo",
-					"table": "customer_table"
+					"schema": {
+						"value": "@dataset().SinkTableName",
+						"type": "Expression"
+					}
 				}
 			},
 			"dependsOn": []
