@@ -65,7 +65,7 @@
 									"referenceName": "SourceDataset",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": true
+								"firstRowOnly": false
 							}
 						},
 						{
