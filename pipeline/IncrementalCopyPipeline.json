@@ -151,7 +151,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[usp_write_watermark]",
+								"storedProcedureName": "usp_write_watermark",
 								"storedProcedureParameters": {
 									"LastModifiedtime": {
 										"value": {
@@ -168,6 +168,10 @@
 										"type": "String"
 									}
 								}
+							},
+							"linkedServiceName": {
+								"referenceName": "CloudStreaming_Sqldb",
+								"type": "LinkedServiceReference"
 							}
 						}
 					]
