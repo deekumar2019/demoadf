@@ -12,6 +12,7 @@
 						"value": "@pipeline().parameters.tableList",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "LookupOldWaterMarkActivity",
@@ -34,7 +35,7 @@
 									"referenceName": "WatermarkDataset_tl",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": false
+								"firstRowOnly": true
 							}
 						},
 						{
