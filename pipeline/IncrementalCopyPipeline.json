@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "First_Lookup_Dest",
+				"name": "LookupOldWaterMarkActivity",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
