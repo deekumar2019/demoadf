@@ -22,6 +22,10 @@
 			"metadata": "Integration runtime name",
 			"defaultValue": "vanarsdel-ir"
 		},
+		"ADLS2_MDW_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ADLS2_MDW'"
+		},
 		"ADLS_Storage_Southridge_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ADLS_Storage_Southridge'"
@@ -70,9 +74,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'adls2_incr'"
 		},
+		"ADLS2_MDW_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
 		"FourthCoffee_Files_properties_typeProperties_host": {
 			"type": "string",
-			"defaultValue": "C:\\Rentals"
+			"defaultValue": "C:\\Rentals\\"
 		},
 		"FourthCoffee_Files_properties_typeProperties_userId": {
 			"type": "string",
@@ -134,6 +142,9 @@
 					"integrationRuntime_vanarsdel-ir": {
 						"value": "[parameters('integrationRuntime_vanarsdel-ir')]"
 					},
+					"ADLS2_MDW_accountKey": {
+						"value": "[parameters('ADLS2_MDW_accountKey')]"
+					},
 					"ADLS_Storage_Southridge_connectionString": {
 						"value": "[parameters('ADLS_Storage_Southridge_connectionString')]"
 					},
@@ -160,6 +171,9 @@
 					},
 					"adls2_incr_accountKey": {
 						"value": "[parameters('adls2_incr_accountKey')]"
+					},
+					"ADLS2_MDW_properties_typeProperties_url": {
+						"value": "[parameters('ADLS2_MDW_properties_typeProperties_url')]"
 					},
 					"OrderDetails_properties_typeProperties_url": {
 						"value": "[parameters('OrderDetails_properties_typeProperties_url')]"

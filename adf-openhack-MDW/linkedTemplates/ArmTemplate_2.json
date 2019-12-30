@@ -21,7 +21,7 @@
 		},
 		"FourthCoffee_Files_properties_typeProperties_host": {
 			"type": "string",
-			"defaultValue": "C:\\Rentals"
+			"defaultValue": "C:\\Rentals\\"
 		},
 		"FourthCoffee_Files_properties_typeProperties_userId": {
 			"type": "string",
@@ -36,6 +36,144 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_yle')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Cloudsales_Sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_schema": {
+						"type": "String"
+					},
+					"cw_table": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().cw_schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_zkb')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CloudStreaming_Sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_schema": {
+						"type": "String"
+					},
+					"cw_table": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().cw_schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Sourcedataset_tl')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Cloudsales_Sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Southridge_Streaming')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OrderDetails",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboTransactions.txt",
+						"folderPath": "cloudstreaming",
+						"fileSystem": "landed"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "TransactionID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "StreamStart",
+						"type": "String"
+					},
+					{
+						"name": "StreamEnd",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Streaming')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -468,7 +606,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_yle')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CopyPipeline_Cloudstreaming')]",
@@ -639,7 +779,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_zkb')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CopyPipeline_Cosmosdb_Movies')]",
@@ -1085,7 +1227,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/WatermarkDataset_tl')]"
+				"[concat(variables('factoryId'), '/datasets/WatermarkDataset_tl')]",
+				"[concat(variables('factoryId'), '/datasets/Sourcedataset_tl')]"
 			]
 		},
 		{
@@ -1124,7 +1267,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SourceDataset_msr')]",
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_4y8')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1163,255 +1306,42 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SourceDataset_s2q')]",
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_m03')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "Vanarsdel_SQLDB",
+					"referenceName": "FourthCoffee_Files",
 					"type": "LinkedServiceReference"
 				},
-				"parameters": {
-					"cw_table": {
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ActorID",
+						"type": "String"
+					},
+					{
+						"name": "ActorName",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
 						"type": "String"
 					}
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": {
-						"value": "@dataset().cw_table",
-						"type": "Expression"
-					}
-				}
+				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Vanarsdel_SQLDB')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Customers')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "CloudsalesCustomers",
-								"type": "DatasetReference"
-							},
-							"name": "CloudsalesCustomers",
-							"typeProperties": {}
-						},
-						{
-							"dataset": {
-								"referenceName": "CloudsalesAddresses",
-								"type": "DatasetReference"
-							},
-							"name": "CloudsalesAddresses",
-							"typeProperties": {}
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "Customers",
-								"type": "DatasetReference"
-							},
-							"name": "Customers"
-						}
-					],
-					"transformations": [
-						{
-							"name": "NewColsAddedCloudsales"
-						},
-						{
-							"name": "NewColsAddedCloudsalesAddr"
-						},
-						{
-							"name": "CloudsalesCustomerAddr"
-						},
-						{
-							"name": "DateColumns"
-						},
-						{
-							"name": "CloudsalesCustomerAddresses"
-						}
-					],
-					"script": "\n\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CloudsalesCustomers\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CloudsalesAddresses\nCloudsalesCustomers derive(SourceID = 1,\n\t\tSourceSystemCustomerID = concat('1',CustomerID)) ~> NewColsAddedCloudsales\nCloudsalesAddresses derive(SourceID = 1,\n\t\tGlobalCustomerID = concat('1',CustomerID,AddressID)) ~> NewColsAddedCloudsalesAddr\nNewColsAddedCloudsales, NewColsAddedCloudsalesAddr join(CloudsalesCustomers@CustomerID == CloudsalesAddresses@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> CloudsalesCustomerAddr\nCloudsalesCustomerAddr derive(CustomerCreatedDate = iif(CloudsalesCustomers@CreatedDate>CloudsalesAddresses@CreatedDate,CloudsalesCustomers@CreatedDate,CloudsalesAddresses@CreatedDate),\n\t\tCustomerUpdatedDate = iif(CloudsalesCustomers@UpdatedDate>CloudsalesAddresses@UpdatedDate,CloudsalesCustomers@UpdatedDate,CloudsalesAddresses@UpdatedDate )) ~> DateColumns\nDateColumns select(mapColumn(\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tSourceSystemCustomerID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tSourceSystemIdID = NewColsAddedCloudsalesAddr@SourceID,\n\t\tGlobalCustomerID,\n\t\tCustomerCreatedDate,\n\t\tCustomerUpdatedDate\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> CloudsalesCustomerAddresses\nCloudsalesCustomerAddresses sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Customers"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Southridge_sales_dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Orders",
-								"type": "DatasetReference"
-							},
-							"name": "Orders",
-							"typeProperties": {}
-						},
-						{
-							"dataset": {
-								"referenceName": "OrderDetails",
-								"type": "DatasetReference"
-							},
-							"name": "Orderdetail",
-							"typeProperties": {}
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SalesOrders",
-								"type": "DatasetReference"
-							},
-							"name": "SalesOrderDetail"
-						}
-					],
-					"transformations": [
-						{
-							"name": "SalesOrders"
-						},
-						{
-							"name": "SalesOrderConformed",
-							"description": "Autogenerated by data preview actions"
-						},
-						{
-							"name": "SalesStaging"
-						}
-					],
-					"script": "\n\nsource(output(\n\t\tOrderID as string,\n\t\tCustomerID as string,\n\t\tOrderDate as string,\n\t\tShipDate as string,\n\t\tTotalCost as double,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> Orders\nsource(output(\n\t\tOrderDetailID as string,\n\t\tOrderID as string,\n\t\tMovieID as string,\n\t\tQuantity as integer,\n\t\tUnitCost as string,\n\t\tLineNumber as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> Orderdetail\nOrders, Orderdetail join(Orders@OrderID == Orderdetail@OrderID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> SalesOrders\nSalesOrders select(mapColumn(\n\t\tOrderID = Orders@OrderID,\n\t\tCustomerID,\n\t\tOrderDate,\n\t\tShipDate,\n\t\tTotalCost,\n\t\tOrderDetailID,\n\t\tMovieID,\n\t\tQuantity,\n\t\tUnitCost,\n\t\tLineNumber\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> SalesOrderConformed\nSalesOrderConformed derive(SourceId = 1,\n\t\tUniqueOrderID = uuid(),\n\t\tUniqueMovieID = concat('1',MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID)) ~> SalesStaging\nSalesStaging sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tmapColumn(\n\t\tOrderID,\n\t\tCustomerID,\n\t\tOrderDate,\n\t\tShipDate,\n\t\tTotalCost,\n\t\tOrderDetailID,\n\t\tMovieID,\n\t\tQuantity,\n\t\tUnitCost,\n\t\tLineNumber,\n\t\tSourceId,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID\n\t)) ~> SalesOrderDetail"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Streaming_dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Southridge_Streaming",
-								"type": "DatasetReference"
-							},
-							"name": "SouthridgeStreaming",
-							"typeProperties": {}
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "Streaming",
-								"type": "DatasetReference"
-							},
-							"name": "Streaming"
-						}
-					],
-					"transformations": [
-						{
-							"name": "NewColsAdded"
-						},
-						{
-							"name": "StreamingConformed"
-						}
-					],
-					"script": "\n\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as timestamp,\n\t\tStreamEnd as timestamp,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> SouthridgeStreaming\nSouthridgeStreaming derive(SourceSystemID = 1,\n\t\tGlobalTransactionid = uuid(),\n\t\tSourceSystemTransactionID = concat('1',TransactionID),\n\t\tUniqueMovieID = concat('1',MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID)) ~> NewColsAdded\nNewColsAdded select(mapColumn(\n\t\tStreamStart,\n\t\tStreamEnd,\n\t\tCreatedDate,\n\t\tUpdatedDate,\n\t\tSourceSystemID,\n\t\tGlobalTransactionid,\n\t\tSourceSystemTransactionID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> StreamingConformed\nStreamingConformed sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Streaming"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Streaming')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CopyPipeline_fourthcoffee')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_msr",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "/"
-							},
-							{
-								"name": "Destination",
-								"value": "landed/fourthcoffee/"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings",
-									"skipLineCount": 0
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".csv"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "SourceDataset_msr",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DestinationDataset_msr",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SourceDataset_msr')]"
+				"[concat(variables('factoryId'), '/linkedServices/FourthCoffee_Files')]"
 			]
 		}
 	]

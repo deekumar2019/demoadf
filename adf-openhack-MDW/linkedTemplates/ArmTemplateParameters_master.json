@@ -14,6 +14,9 @@
 		"integrationRuntime_vanarsdel-ir": {
 			"value": "vanarsdel-ir"
 		},
+		"ADLS2_MDW_accountKey": {
+			"value": ""
+		},
 		"ADLS_Storage_Southridge_connectionString": {
 			"value": ""
 		},
@@ -50,8 +53,11 @@
 		"adls2_incr_accountKey": {
 			"value": ""
 		},
+		"ADLS2_MDW_properties_typeProperties_url": {
+			"value": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
 		"FourthCoffee_Files_properties_typeProperties_host": {
-			"value": "C:\\Rentals"
+			"value": "C:\\Rentals\\"
 		},
 		"FourthCoffee_Files_properties_typeProperties_userId": {
 			"value": "openhackadmin"
