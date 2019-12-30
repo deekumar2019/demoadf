@@ -5,9 +5,9 @@
 		"annotations": [],
 		"type": "FileServer",
 		"typeProperties": {
-			"host": "C:\\Rentals",
+			"host": "C:\\Rentals\\",
 			"userId": "openhackadmin",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI5NmM3OTUzOS03N2U3LTRkYTMtYTY1Mi01MDFmYzIyYjljMDQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3OTYyNGU0Yy1jMzdhLTRmNzYtOTkyNy1hYWUxMjhjYmM5M2YiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "forthcoffee-ir",
