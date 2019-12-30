@@ -12,6 +12,11 @@
 			"metadata": "Integration runtime name",
 			"defaultValue": "dataflowcompute"
 		},
+		"integrationRuntime_forthcoffee-ir": {
+			"type": "string",
+			"metadata": "Integration runtime name",
+			"defaultValue": "forthcoffee-ir"
+		},
 		"integrationRuntime_vanarsdel-ir": {
 			"type": "string",
 			"metadata": "Integration runtime name",
@@ -20,6 +25,10 @@
 		"ADLS_Storage_Southridge_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ADLS_Storage_Southridge'"
+		},
+		"AzureSynapseAnalytics1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSynapseAnalytics1'"
 		},
 		"CloudStreaming_Sqldb_connectionString": {
 			"type": "secureString",
@@ -32,6 +41,10 @@
 		"CosmosDb1_Movie_Catalog_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDb1_Movie_Catalog'"
+		},
+		"FourthCoffee_Files_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FourthCoffee_Files'"
 		},
 		"OrderDetails_accountKey": {
 			"type": "secureString",
@@ -56,6 +69,14 @@
 		"adls2_incr_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'adls2_incr'"
+		},
+		"FourthCoffee_Files_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\Rentals"
+		},
+		"FourthCoffee_Files_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "openhackadmin"
 		},
 		"OrderDetails_properties_typeProperties_url": {
 			"type": "string",
@@ -107,11 +128,17 @@
 					"integrationRuntime_dataflowcompute": {
 						"value": "[parameters('integrationRuntime_dataflowcompute')]"
 					},
+					"integrationRuntime_forthcoffee-ir": {
+						"value": "[parameters('integrationRuntime_forthcoffee-ir')]"
+					},
 					"integrationRuntime_vanarsdel-ir": {
 						"value": "[parameters('integrationRuntime_vanarsdel-ir')]"
 					},
 					"ADLS_Storage_Southridge_connectionString": {
 						"value": "[parameters('ADLS_Storage_Southridge_connectionString')]"
+					},
+					"AzureSynapseAnalytics1_connectionString": {
+						"value": "[parameters('AzureSynapseAnalytics1_connectionString')]"
 					},
 					"CloudStreaming_Sqldb_connectionString": {
 						"value": "[parameters('CloudStreaming_Sqldb_connectionString')]"
@@ -184,11 +211,20 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"FourthCoffee_Files_password": {
+						"value": "[parameters('FourthCoffee_Files_password')]"
+					},
 					"Vanarsdel_SQLDB_connectionString": {
 						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
 					},
 					"Vanarsdel_SQLDB_password": {
 						"value": "[parameters('Vanarsdel_SQLDB_password')]"
+					},
+					"FourthCoffee_Files_properties_typeProperties_host": {
+						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_host')]"
+					},
+					"FourthCoffee_Files_properties_typeProperties_userId": {
+						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_userId')]"
 					},
 					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
 						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
@@ -197,6 +233,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_2')]"
 			]
 		}
 	]

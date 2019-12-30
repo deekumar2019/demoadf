@@ -8,10 +8,16 @@
 		"integrationRuntime_dataflowcompute": {
 			"value": "dataflowcompute"
 		},
+		"integrationRuntime_forthcoffee-ir": {
+			"value": "forthcoffee-ir"
+		},
 		"integrationRuntime_vanarsdel-ir": {
 			"value": "vanarsdel-ir"
 		},
 		"ADLS_Storage_Southridge_connectionString": {
+			"value": ""
+		},
+		"AzureSynapseAnalytics1_connectionString": {
 			"value": ""
 		},
 		"CloudStreaming_Sqldb_connectionString": {
@@ -21,6 +27,9 @@
 			"value": ""
 		},
 		"CosmosDb1_Movie_Catalog_connectionString": {
+			"value": ""
+		},
+		"FourthCoffee_Files_password": {
 			"value": ""
 		},
 		"OrderDetails_accountKey": {
@@ -40,6 +49,12 @@
 		},
 		"adls2_incr_accountKey": {
 			"value": ""
+		},
+		"FourthCoffee_Files_properties_typeProperties_host": {
+			"value": "C:\\Rentals"
+		},
+		"FourthCoffee_Files_properties_typeProperties_userId": {
+			"value": "openhackadmin"
 		},
 		"OrderDetails_properties_typeProperties_url": {
 			"value": "https://mdwstorageaccount.dfs.core.windows.net"
