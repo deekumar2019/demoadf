@@ -32,6 +32,12 @@
 		"CosmosDb1_Movie_Catalog_connectionString": {
 			"value": ""
 		},
+		"CosmosDbNew_connectionString": {
+			"value": ""
+		},
+		"CosmosDb_southridge_connectionString": {
+			"value": ""
+		},
 		"FourthCoffee_Files_password": {
 			"value": ""
 		},

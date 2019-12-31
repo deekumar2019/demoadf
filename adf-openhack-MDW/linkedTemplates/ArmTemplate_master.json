@@ -46,6 +46,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDb1_Movie_Catalog'"
 		},
+		"CosmosDbNew_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbNew'"
+		},
+		"CosmosDb_southridge_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDb_southridge'"
+		},
 		"FourthCoffee_Files_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'FourthCoffee_Files'"
@@ -160,6 +168,12 @@
 					"CosmosDb1_Movie_Catalog_connectionString": {
 						"value": "[parameters('CosmosDb1_Movie_Catalog_connectionString')]"
 					},
+					"CosmosDbNew_connectionString": {
+						"value": "[parameters('CosmosDbNew_connectionString')]"
+					},
+					"CosmosDb_southridge_connectionString": {
+						"value": "[parameters('CosmosDb_southridge_connectionString')]"
+					},
 					"OrderDetails_accountKey": {
 						"value": "[parameters('OrderDetails_accountKey')]"
 					},
@@ -224,24 +238,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"FourthCoffee_Files_password": {
-						"value": "[parameters('FourthCoffee_Files_password')]"
-					},
-					"Vanarsdel_SQLDB_connectionString": {
-						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
-					},
-					"Vanarsdel_SQLDB_password": {
-						"value": "[parameters('Vanarsdel_SQLDB_password')]"
-					},
-					"FourthCoffee_Files_properties_typeProperties_host": {
-						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_host')]"
-					},
-					"FourthCoffee_Files_properties_typeProperties_userId": {
-						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_userId')]"
-					},
-					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
-						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -262,6 +258,24 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"FourthCoffee_Files_password": {
+						"value": "[parameters('FourthCoffee_Files_password')]"
+					},
+					"Vanarsdel_SQLDB_connectionString": {
+						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
+					},
+					"Vanarsdel_SQLDB_password": {
+						"value": "[parameters('Vanarsdel_SQLDB_password')]"
+					},
+					"FourthCoffee_Files_properties_typeProperties_host": {
+						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_host')]"
+					},
+					"FourthCoffee_Files_properties_typeProperties_userId": {
+						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_userId')]"
+					},
+					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
+						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
 					}
 				}
 			},
