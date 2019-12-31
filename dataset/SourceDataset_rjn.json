@@ -1,0 +1,15 @@
+{
+	"name": "SourceDataset_rjn",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDb_southridge",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": [],
+		"typeProperties": {
+			"collectionName": "movies"
+		}
+	}
+}
