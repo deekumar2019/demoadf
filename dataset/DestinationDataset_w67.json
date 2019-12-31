@@ -1,0 +1,18 @@
+{
+	"name": "DestinationDataset_w67",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS2_MDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "fourthcoffee",
+				"fileSystem": "landed"
+			}
+		}
+	}
+}
