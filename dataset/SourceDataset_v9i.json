@@ -16,19 +16,6 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "ActorID",
-				"type": "String"
-			},
-			{
-				"name": "ActorName",
-				"type": "String"
-			},
-			{
-				"name": "Gender",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
