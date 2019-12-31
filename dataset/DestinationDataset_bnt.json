@@ -10,7 +10,66 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "data_e9c08d5a-ef57-429f-825e-43facddef9e5_caac6bc4-7671-4637-b0a2-1f105532d4ec.json",
 				"fileSystem": "movies"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"actors": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"name": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"availabilityDate": {
+					"type": "string"
+				},
+				"genre": {
+					"type": "string"
+				},
+				"rating": {
+					"type": "string"
+				},
+				"releaseYear": {
+					"type": "integer"
+				},
+				"runtime": {
+					"type": "integer"
+				},
+				"streamingAvailabilityDate": {
+					"type": "string"
+				},
+				"tier": {
+					"type": "integer"
+				},
+				"title": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				},
+				"_rid": {
+					"type": "string"
+				},
+				"_self": {
+					"type": "string"
+				},
+				"_etag": {
+					"type": "string"
+				},
+				"_attachments": {
+					"type": "string"
+				},
+				"_ts": {
+					"type": "integer"
+				}
 			}
 		}
 	}

@@ -1,0 +1,16 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "MovieCatalogSR"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"script": "\n\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> MovieCatalogSR"
+		}
+	}
+}
