@@ -2,16 +2,16 @@
 	"name": "DestinationDataset_v9i",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ADLS_Storage_Southridge",
+			"referenceName": "ADLS2_MDW",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation",
+				"type": "AzureBlobFSLocation",
 				"folderPath": "fourthcoffee",
-				"container": "landed"
+				"fileSystem": "landed"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
