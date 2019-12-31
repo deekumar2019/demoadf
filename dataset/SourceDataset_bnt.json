@@ -1,0 +1,14 @@
+{
+	"name": "SourceDataset_bnt",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDbNew",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"typeProperties": {
+			"collectionName": "movies"
+		}
+	}
+}
