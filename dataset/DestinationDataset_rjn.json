@@ -1,0 +1,20 @@
+{
+	"name": "DestinationDataset_rjn",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS2_MDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "movies",
+				"fileSystem": "landed"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
