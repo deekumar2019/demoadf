@@ -1,0 +1,19 @@
+{
+	"name": "DestinationDataset_6ri",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS2_MDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "movies",
+				"fileSystem": "landed"
+			}
+		},
+		"schema": []
+	}
+}
