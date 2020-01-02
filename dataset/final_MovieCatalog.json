@@ -1,5 +1,5 @@
 {
-	"name": "MovieCatalog",
+	"name": "final_MovieCatalog",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ADLS2_MDW",

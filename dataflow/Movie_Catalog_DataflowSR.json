@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "MovieCatalog",
+						"referenceName": "final_MovieCatalog",
 						"type": "DatasetReference"
 					},
 					"name": "FinalMovieCatalog"
