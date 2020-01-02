@@ -1,0 +1,271 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-openhack-MDW"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyPipeline_MovieCatalog_rw')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_zi4",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "movies"
+							},
+							{
+								"name": "Destination",
+								"value": "landed/movies/"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "CosmosDbSqlApiSource",
+								"preferredRegions": []
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings",
+									"quoteAllText": true,
+									"filePattern": "setOfObjects"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$"
+										},
+										"sink": {
+											"path": "$"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_zi4",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_zi4",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_zi4')]",
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_zi4')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_bnt')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADLS2_MDW",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "data_e9c08d5a-ef57-429f-825e-43facddef9e5_caac6bc4-7671-4637-b0a2-1f105532d4ec.json",
+						"fileSystem": "movies"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"actors": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"availabilityDate": {
+							"type": "string"
+						},
+						"genre": {
+							"type": "string"
+						},
+						"rating": {
+							"type": "string"
+						},
+						"releaseYear": {
+							"type": "integer"
+						},
+						"runtime": {
+							"type": "integer"
+						},
+						"streamingAvailabilityDate": {
+							"type": "string"
+						},
+						"tier": {
+							"type": "integer"
+						},
+						"title": {
+							"type": "string"
+						},
+						"id": {
+							"type": "string"
+						},
+						"_rid": {
+							"type": "string"
+						},
+						"_self": {
+							"type": "string"
+						},
+						"_etag": {
+							"type": "string"
+						},
+						"_attachments": {
+							"type": "string"
+						},
+						"_ts": {
+							"type": "integer"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_zi4')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADLS2_MDW",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "movies",
+						"fileSystem": "landed"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_bnt')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CosmosDbNew",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CosmosDbSqlApiCollection",
+				"schema": {
+					"type": "object",
+					"properties": {
+						"actors": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"availabilityDate": {
+							"type": "string"
+						},
+						"genre": {
+							"type": "string"
+						},
+						"rating": {
+							"type": "string"
+						},
+						"releaseYear": {
+							"type": "integer"
+						},
+						"runtime": {
+							"type": "integer"
+						},
+						"streamingAvailabilityDate": {
+							"type": "string"
+						},
+						"tier": {
+							"type": "integer"
+						},
+						"title": {
+							"type": "string"
+						}
+					}
+				},
+				"typeProperties": {
+					"collectionName": "movies"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_zi4')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CosmosDb1_Movie_Catalog",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CosmosDbSqlApiCollection",
+				"schema": [],
+				"typeProperties": {
+					"collectionName": "movies"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
