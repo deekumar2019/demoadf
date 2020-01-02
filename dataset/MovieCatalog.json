@@ -1,0 +1,22 @@
+{
+	"name": "MovieCatalog",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS2_MDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Movies",
+				"fileSystem": "curated"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
