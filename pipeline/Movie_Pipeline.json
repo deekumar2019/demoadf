@@ -1,0 +1,31 @@
+{
+	"name": "Movie_Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Movie_Catalog_DataflowSR",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Movie_Catalog_DataflowSR",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
