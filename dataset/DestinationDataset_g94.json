@@ -1,0 +1,21 @@
+{
+	"name": "DestinationDataset_g94",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS2_MDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "production"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
