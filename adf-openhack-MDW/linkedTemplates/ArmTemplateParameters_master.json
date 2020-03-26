@@ -5,15 +5,6 @@
 		"factoryName": {
 			"value": "adf-openhack-MDW"
 		},
-		"integrationRuntime_dataflowcompute": {
-			"value": "dataflowcompute"
-		},
-		"integrationRuntime_forthcoffee-ir": {
-			"value": "forthcoffee-ir"
-		},
-		"integrationRuntime_vanarsdel-ir": {
-			"value": "vanarsdel-ir"
-		},
 		"ADLS2_MDW_accountKey": {
 			"value": ""
 		},

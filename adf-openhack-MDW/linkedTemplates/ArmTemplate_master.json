@@ -7,21 +7,6 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-openhack-MDW"
 		},
-		"integrationRuntime_dataflowcompute": {
-			"type": "string",
-			"metadata": "Integration runtime name",
-			"defaultValue": "dataflowcompute"
-		},
-		"integrationRuntime_forthcoffee-ir": {
-			"type": "string",
-			"metadata": "Integration runtime name",
-			"defaultValue": "forthcoffee-ir"
-		},
-		"integrationRuntime_vanarsdel-ir": {
-			"type": "string",
-			"metadata": "Integration runtime name",
-			"defaultValue": "vanarsdel-ir"
-		},
 		"ADLS2_MDW_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ADLS2_MDW'"
@@ -140,15 +125,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"integrationRuntime_dataflowcompute": {
-						"value": "[parameters('integrationRuntime_dataflowcompute')]"
-					},
-					"integrationRuntime_forthcoffee-ir": {
-						"value": "[parameters('integrationRuntime_forthcoffee-ir')]"
-					},
-					"integrationRuntime_vanarsdel-ir": {
-						"value": "[parameters('integrationRuntime_vanarsdel-ir')]"
 					},
 					"ADLS2_MDW_accountKey": {
 						"value": "[parameters('ADLS2_MDW_accountKey')]"

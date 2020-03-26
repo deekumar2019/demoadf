@@ -7,21 +7,6 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-openhack-MDW"
 		},
-		"integrationRuntime_dataflowcompute": {
-			"type": "string",
-			"metadata": "Integration runtime name",
-			"defaultValue": "dataflowcompute"
-		},
-		"integrationRuntime_forthcoffee-ir": {
-			"type": "string",
-			"metadata": "Integration runtime name",
-			"defaultValue": "forthcoffee-ir"
-		},
-		"integrationRuntime_vanarsdel-ir": {
-			"type": "string",
-			"metadata": "Integration runtime name",
-			"defaultValue": "vanarsdel-ir"
-		},
 		"ADLS2_MDW_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ADLS2_MDW'"
@@ -272,7 +257,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_dataflowcompute'))]",
+			"name": "[concat(parameters('factoryName'), '/dataflowcompute')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -291,7 +276,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_forthcoffee-ir'))]",
+			"name": "[concat(parameters('factoryName'), '/forthcoffee-ir')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -301,7 +286,26 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_vanarsdel-ir'))]",
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 32,
+							"timeToLive": 10
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/vanarsdel-ir')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -505,34 +509,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/CosmosDb1_Movie_Catalog')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Customers')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OrderDetails",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "Customers",
-						"fileSystem": "curated"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OrderDetails')]"
 			]
 		}
 	]
