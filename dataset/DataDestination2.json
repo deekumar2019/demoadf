@@ -1,7 +1,11 @@
 {
-	"name": "DataDestination1",
+	"name": "DataDestination2",
 	"properties": {
 		"description": "Connection to your data destination store.",
+		"linkedServiceName": {
+			"referenceName": "adls2_bulk",
+			"type": "LinkedServiceReference"
+		},
 		"parameters": {
 			"Data_Destination_Container": {
 				"type": "String"
@@ -14,12 +18,12 @@
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation",
+				"type": "AzureBlobFSLocation",
 				"folderPath": {
 					"value": "@{dataset().Data_Destination_Directory}",
 					"type": "Expression"
 				},
-				"container": {
+				"fileSystem": {
 					"value": "@{dataset().Data_Destination_Container}",
 					"type": "Expression"
 				}
