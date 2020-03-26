@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ADLS_Storage_Southridge'"
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
 		"AzureSynapseAnalytics1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSynapseAnalytics1'"
@@ -63,6 +67,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Vanarsdel_SQLDB'"
 		},
+		"adls2_bulk_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adls2_bulk'"
+		},
 		"adls2_incr_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'adls2_incr'"
@@ -94,6 +102,10 @@
 		"Vanarsdel_SQLDB_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "openhackadmin"
+		},
+		"adls2_bulk_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
 		},
 		"adls2_incr_properties_typeProperties_url": {
 			"type": "string",
@@ -132,6 +144,9 @@
 					"ADLS_Storage_Southridge_connectionString": {
 						"value": "[parameters('ADLS_Storage_Southridge_connectionString')]"
 					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
 					"AzureSynapseAnalytics1_connectionString": {
 						"value": "[parameters('AzureSynapseAnalytics1_connectionString')]"
 					},
@@ -159,6 +174,9 @@
 					"SalesOrders_accountKey": {
 						"value": "[parameters('SalesOrders_accountKey')]"
 					},
+					"adls2_bulk_accountKey": {
+						"value": "[parameters('adls2_bulk_accountKey')]"
+					},
 					"adls2_incr_accountKey": {
 						"value": "[parameters('adls2_incr_accountKey')]"
 					},
@@ -173,6 +191,9 @@
 					},
 					"SalesOrders_properties_typeProperties_url": {
 						"value": "[parameters('SalesOrders_properties_typeProperties_url')]"
+					},
+					"adls2_bulk_properties_typeProperties_url": {
+						"value": "[parameters('adls2_bulk_properties_typeProperties_url')]"
 					},
 					"adls2_incr_properties_typeProperties_url": {
 						"value": "[parameters('adls2_incr_properties_typeProperties_url')]"
@@ -234,24 +255,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"FourthCoffee_Files_password": {
-						"value": "[parameters('FourthCoffee_Files_password')]"
-					},
-					"Vanarsdel_SQLDB_connectionString": {
-						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
-					},
-					"Vanarsdel_SQLDB_password": {
-						"value": "[parameters('Vanarsdel_SQLDB_password')]"
-					},
-					"FourthCoffee_Files_properties_typeProperties_host": {
-						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_host')]"
-					},
-					"FourthCoffee_Files_properties_typeProperties_userId": {
-						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_userId')]"
-					},
-					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
-						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -272,6 +275,24 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"FourthCoffee_Files_password": {
+						"value": "[parameters('FourthCoffee_Files_password')]"
+					},
+					"Vanarsdel_SQLDB_connectionString": {
+						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
+					},
+					"Vanarsdel_SQLDB_password": {
+						"value": "[parameters('Vanarsdel_SQLDB_password')]"
+					},
+					"FourthCoffee_Files_properties_typeProperties_host": {
+						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_host')]"
+					},
+					"FourthCoffee_Files_properties_typeProperties_userId": {
+						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_userId')]"
+					},
+					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
+						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
 					}
 				}
 			},

@@ -11,6 +11,9 @@
 		"ADLS_Storage_Southridge_connectionString": {
 			"value": ""
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
 		"AzureSynapseAnalytics1_connectionString": {
 			"value": ""
 		},
@@ -47,6 +50,9 @@
 		"Vanarsdel_SQLDB_password": {
 			"value": ""
 		},
+		"adls2_bulk_accountKey": {
+			"value": ""
+		},
 		"adls2_incr_accountKey": {
 			"value": ""
 		},
@@ -70,6 +76,9 @@
 		},
 		"Vanarsdel_SQLDB_properties_typeProperties_userName": {
 			"value": "openhackadmin"
+		},
+		"adls2_bulk_properties_typeProperties_url": {
+			"value": "https://mdwstorageaccount.dfs.core.windows.net"
 		},
 		"adls2_incr_properties_typeProperties_url": {
 			"value": "https://adfstoragedee.dfs.core.windows.net"
