@@ -199,7 +199,15 @@
 											}
 										},
 										"sink": {
-											"type": "DelimitedTextSink"
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
 										},
 										"enableStaging": false,
 										"dataIntegrationUnits": 0
