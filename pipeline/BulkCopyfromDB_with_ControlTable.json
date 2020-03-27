@@ -69,16 +69,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": [
-								{
-									"name": "Source",
-									"value": "dbo."
-								},
-								{
-									"name": "Destination",
-									"value": "raw/@{pipeline().parameters.Control_Table_Schema_SourceTableName}"
-								}
-							],
+							"userProperties": [],
 							"typeProperties": {
 								"source": {
 									"type": "SqlSource",
@@ -124,7 +115,7 @@
 											"type": "Expression"
 										},
 										"Control_Table_Schema_SourceTableName": {
-											"value": "@pipeline().parameters.Control_Table_Schema_SourceTableName",
+											"value": "@item()",
 											"type": "Expression"
 										}
 									}
