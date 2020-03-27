@@ -231,7 +231,8 @@
 												"Data_Destination_Directory": {
 													"value": "@pipeline().parameters.Data_Destination_Directory",
 													"type": "Expression"
-												}
+												},
+												"filename": "@item().SourceTableName"
 											}
 										}
 									]
@@ -384,7 +385,8 @@
 												"Data_Destination_Directory": {
 													"value": "@pipeline().parameters.Data_Destination_Directory",
 													"type": "Expression"
-												}
+												},
+												"filename": "@item().SourceTableName"
 											}
 										}
 									]
@@ -2412,6 +2414,9 @@
 					},
 					"Data_Destination_Directory": {
 						"type": "String"
+					},
+					"filename": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -2419,6 +2424,10 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
 						"folderPath": {
 							"value": "@item().SourceTableName",
 							"type": "Expression"
