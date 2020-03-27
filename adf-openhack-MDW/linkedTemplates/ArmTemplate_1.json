@@ -142,10 +142,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().Tablename",
-							"type": "Expression"
-						},
 						"fileSystem": "raw"
 					},
 					"columnDelimiter": ",",
