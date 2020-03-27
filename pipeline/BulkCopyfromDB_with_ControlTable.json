@@ -100,7 +100,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DataDestination2",
+									"referenceName": "Bulcopy_Dataset",
 									"type": "DatasetReference",
 									"parameters": {
 										"Data_Destination_Container": {

@@ -1,5 +1,5 @@
 {
-	"name": "DataDestination2",
+	"name": "Bulcopy_Dataset",
 	"properties": {
 		"description": "Connection to your data destination store.",
 		"linkedServiceName": {
@@ -19,14 +19,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": {
-					"value": "@{dataset().Data_Destination_Directory}",
-					"type": "Expression"
-				},
-				"fileSystem": {
-					"value": "@{dataset().Data_Destination_Container}",
-					"type": "Expression"
-				}
+				"fileSystem": "raw"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
