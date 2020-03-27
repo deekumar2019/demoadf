@@ -456,10 +456,7 @@
 											"formatSettings": {
 												"type": "DelimitedTextWriteSettings",
 												"quoteAllText": true,
-												"fileExtension": {
-													"value": "@pipeline().parameters.Control_Table_Name",
-													"type": "Expression"
-												}
+												"fileExtension": ".txt"
 											}
 										},
 										"enableStaging": false,
