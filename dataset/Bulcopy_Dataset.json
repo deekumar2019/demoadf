@@ -23,10 +23,13 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@dataset().filename",
+					"value": "concat(@dataset().filename,'.txt')",
 					"type": "Expression"
 				},
-				"folderPath": "@item().SourceTableName",
+				"folderPath": {
+					"value": "@item().SourceTableName",
+					"type": "Expression"
+				},
 				"fileSystem": "raw"
 			},
 			"columnDelimiter": ",",
