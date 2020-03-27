@@ -22,10 +22,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "concat(@item().SourceTableName,'.csv')",
-					"type": "Expression"
-				},
 				"fileSystem": "raw"
 			},
 			"columnDelimiter": ",",
