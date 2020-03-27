@@ -113,10 +113,6 @@
 										"Data_Destination_Directory": {
 											"value": "@pipeline().parameters.Data_Destination_Directory",
 											"type": "Expression"
-										},
-										"Control_Table_Schema_SourceTableName": {
-											"value": "@item()",
-											"type": "Expression"
 										}
 									}
 								}
