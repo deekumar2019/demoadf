@@ -111,7 +111,8 @@
 										"Data_Destination_Directory": {
 											"value": "@pipeline().parameters.Data_Destination_Directory",
 											"type": "Expression"
-										}
+										},
+										"filename": "@item().SourceTableName"
 									}
 								}
 							]
