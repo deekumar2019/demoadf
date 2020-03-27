@@ -23,6 +23,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "@item().SourceTableName",
+				"folderPath": "@item().SourceTableName",
 				"fileSystem": "raw"
 			},
 			"columnDelimiter": ",",
