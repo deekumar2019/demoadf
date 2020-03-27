@@ -12,6 +12,9 @@
 			},
 			"Data_Destination_Directory": {
 				"type": "String"
+			},
+			"Control_Table_Schema_SourceTableName": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -19,6 +22,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().Control_Table_Schema_SourceTableName",
+					"type": "Expression"
+				},
 				"fileSystem": "raw"
 			},
 			"columnDelimiter": ",",
