@@ -142,7 +142,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "@item().SourceTableName",
+						"fileName": "@item().SourceTableName",
 						"fileSystem": "raw"
 					},
 					"columnDelimiter": ",",
