@@ -111,10 +111,7 @@
 											"value": "@pipeline().parameters.Data_Destination_Directory",
 											"type": "Expression"
 										},
-										"Tablename": {
-											"value": "@item().SourceTableName\n",
-											"type": "Expression"
-										}
+										"filename": "@item().SourceTableName"
 									}
 								}
 							]
