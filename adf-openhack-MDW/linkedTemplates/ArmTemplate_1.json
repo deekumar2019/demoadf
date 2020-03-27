@@ -132,9 +132,6 @@
 					},
 					"Data_Destination_Directory": {
 						"type": "String"
-					},
-					"Tablename": {
-						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -142,11 +139,10 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "concat(@item().SourceTableName,'.txt')",
+						"folderPath": {
+							"value": "@item().SourceTableName",
 							"type": "Expression"
 						},
-						"folderPath": "@item().SourceTableName",
 						"fileSystem": "raw"
 					},
 					"columnDelimiter": ",",

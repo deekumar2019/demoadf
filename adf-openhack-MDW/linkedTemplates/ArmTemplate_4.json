@@ -481,10 +481,6 @@
 												"Data_Destination_Directory": {
 													"value": "@pipeline().parameters.Data_Destination_Directory",
 													"type": "Expression"
-												},
-												"Tablename": {
-													"value": "@item().SourceTableName\n",
-													"type": "Expression"
 												}
 											}
 										}
@@ -551,7 +547,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"TableName": {
-										"value": "parameters.Control_Table_Schema_SourceTableName",
+										"value": "@pipeline().parameters.Control_Table_Schema_SourceTableName",
 										"type": "Expression"
 									}
 								}
@@ -603,7 +599,8 @@
 										"sink": {
 											"type": "DelimitedTextSink",
 											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
+												"type": "AzureBlobFSWriteSettings",
+												"copyBehavior": "PreserveHierarchy"
 											},
 											"formatSettings": {
 												"type": "DelimitedTextWriteSettings",
@@ -632,10 +629,6 @@
 												},
 												"Data_Destination_Directory": {
 													"value": "@pipeline().parameters.Data_Destination_Directory",
-													"type": "Expression"
-												},
-												"Tablename": {
-													"value": "@pipeline().parameters.Control_Table_Schema_SourceTableName",
 													"type": "Expression"
 												}
 											}
