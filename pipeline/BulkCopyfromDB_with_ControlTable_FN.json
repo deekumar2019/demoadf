@@ -29,7 +29,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"TableName": {
-								"value": "parameters.Control_Table_Schema_SourceTableName",
+								"value": "@pipeline().parameters.Control_Table_Schema_SourceTableName",
 								"type": "Expression"
 							}
 						}
@@ -110,10 +110,6 @@
 										},
 										"Data_Destination_Directory": {
 											"value": "@pipeline().parameters.Data_Destination_Directory",
-											"type": "Expression"
-										},
-										"Tablename": {
-											"value": "@pipeline().parameters.Control_Table_Schema_SourceTableName",
 											"type": "Expression"
 										}
 									}
