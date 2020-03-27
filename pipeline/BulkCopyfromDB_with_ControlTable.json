@@ -69,7 +69,16 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": [],
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "dbo."
+								},
+								{
+									"name": "Destination",
+									"value": "raw/@{pipeline().parameters.Control_Table_Schema_SourceTableName}"
+								}
+							],
 							"typeProperties": {
 								"source": {
 									"type": "SqlSource",
