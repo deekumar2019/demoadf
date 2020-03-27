@@ -232,7 +232,8 @@
 													"value": "@pipeline().parameters.Data_Destination_Directory",
 													"type": "Expression"
 												},
-												"filename": "@item().SourceTableName"
+												"filename": "@item().SourceTableName",
+												"TableName": "@item().SourceTableName"
 											}
 										}
 									]
@@ -386,7 +387,11 @@
 													"value": "@pipeline().parameters.Data_Destination_Directory",
 													"type": "Expression"
 												},
-												"filename": "@item().SourceTableName"
+												"filename": "@item().SourceTableName",
+												"TableName": {
+													"value": "@item().SourceTableName",
+													"type": "Expression"
+												}
 											}
 										}
 									]
@@ -2417,6 +2422,9 @@
 					},
 					"filename": {
 						"type": "string"
+					},
+					"TableName": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -2425,11 +2433,11 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "concat(@dataset().filename,'.txt')",
+							"value": "@dataset().filename",
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "@item().SourceTableName",
+							"value": "@dataset().TableName",
 							"type": "Expression"
 						},
 						"fileSystem": "raw"

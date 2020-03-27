@@ -135,6 +135,9 @@
 					},
 					"filename": {
 						"type": "string"
+					},
+					"TableName": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -143,11 +146,11 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "concat(@dataset().filename,'.txt')",
+							"value": "@dataset().filename",
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "@item().SourceTableName",
+							"value": "@dataset().TableName",
 							"type": "Expression"
 						},
 						"fileSystem": "raw"
