@@ -221,7 +221,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "DataDestination2",
+											"referenceName": "Bulcopy_Dataset",
 											"type": "DatasetReference",
 											"parameters": {
 												"Data_Destination_Container": {
@@ -265,7 +265,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseExternal_ControlTable2')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseDataSource2')]",
-				"[concat(variables('factoryId'), '/datasets/DataDestination2')]"
+				"[concat(variables('factoryId'), '/datasets/Bulcopy_Dataset')]"
 			]
 		},
 		{
@@ -2710,7 +2710,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DataDestination2')]",
+			"name": "[concat(parameters('factoryName'), '/Bulcopy_Dataset')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2732,14 +2732,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": {
-							"value": "@{dataset().Data_Destination_Directory}",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@{dataset().Data_Destination_Container}",
-							"type": "Expression"
-						}
+						"fileSystem": "raw"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
