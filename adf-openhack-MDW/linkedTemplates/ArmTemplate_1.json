@@ -142,7 +142,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "@item().SourceTableName",
+						"fileName": "datadump.csv",
+						"folderPath": "@item().SourceTableName",
 						"fileSystem": "raw"
 					},
 					"columnDelimiter": ",",
