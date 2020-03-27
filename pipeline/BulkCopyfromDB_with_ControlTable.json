@@ -101,7 +101,17 @@
 							"outputs": [
 								{
 									"referenceName": "Bulcopy_Dataset",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"Data_Destination_Container": {
+											"value": "@pipeline().parameters.Data_Destination_Container",
+											"type": "Expression"
+										},
+										"Data_Destination_Directory": {
+											"value": "@pipeline().parameters.Data_Destination_Directory",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
