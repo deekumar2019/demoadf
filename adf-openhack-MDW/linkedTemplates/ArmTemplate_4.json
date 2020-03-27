@@ -457,7 +457,7 @@
 												"type": "DelimitedTextWriteSettings",
 												"quoteAllText": true,
 												"fileExtension": {
-													"value": "concat(@pipeline().parameters.Control_Table_Schema_SourceTableName,'.txt')",
+													"value": "@pipeline().parameters.Control_Table_Name",
 													"type": "Expression"
 												}
 											}
