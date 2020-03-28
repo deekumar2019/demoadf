@@ -2441,7 +2441,7 @@
 							"type": "Expression"
 						},
 						"fileSystem": {
-							"value": "raw/@{formatDateTime(utcnow(),'yyyy')}",
+							"value": "raw/@{formatDateTime(utcnow(),'yyyy')}/@{formatDateTime(utcnow(),'MM')}/@{formatDateTime(utcnow(),'dd')}",
 							"type": "Expression"
 						}
 					},
