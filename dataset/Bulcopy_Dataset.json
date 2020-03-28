@@ -33,7 +33,10 @@
 					"value": "@dataset().TableName",
 					"type": "Expression"
 				},
-				"fileSystem": "raw"
+				"fileSystem": {
+					"value": "raw/@formatDateTime( utcnow().'yyyy')/@formatDateTime( utcnow().'MM')/@formatDateTime( utcnow().'dd')",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
