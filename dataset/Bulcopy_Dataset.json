@@ -32,10 +32,6 @@
 				"folderPath": {
 					"value": "@dataset().TableName",
 					"type": "Expression"
-				},
-				"fileSystem": {
-					"value": "dataset().Data_Destination_Container",
-					"type": "Expression"
 				}
 			},
 			"columnDelimiter": ",",
