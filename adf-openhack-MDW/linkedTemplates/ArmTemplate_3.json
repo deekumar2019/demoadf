@@ -13,6 +13,74 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Rental_Transactions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OrderDetails",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Transactions.csv",
+						"folderPath": "fourthcoffee",
+						"fileSystem": "landed"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "TransactionID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "RentalDate",
+						"type": "String"
+					},
+					{
+						"name": "ReturnDate",
+						"type": "String"
+					},
+					{
+						"name": "RentalCost",
+						"type": "String"
+					},
+					{
+						"name": "LateFee",
+						"type": "String"
+					},
+					{
+						"name": "RewindFlag",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SalesOrders')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -590,74 +658,6 @@
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "OrderDetails",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "dboTransactions.txt",
-						"folderPath": "vararsdel",
-						"fileSystem": "landed"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "TransactionID",
-						"type": "String"
-					},
-					{
-						"name": "CustomerID",
-						"type": "String"
-					},
-					{
-						"name": "MovieID",
-						"type": "String"
-					},
-					{
-						"name": "RentalDate",
-						"type": "String"
-					},
-					{
-						"name": "ReturnDate",
-						"type": "String"
-					},
-					{
-						"name": "RentalCost",
-						"type": "String"
-					},
-					{
-						"name": "LateFee",
-						"type": "String"
-					},
-					{
-						"name": "RewindFlag",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Vanarsdel_Txns')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ADLS2_MDW",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
