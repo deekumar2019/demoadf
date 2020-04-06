@@ -149,8 +149,12 @@
 							"value": "@concat(dataset().filename,formatDateTime(utcnow(), 'yyyy'), formatDateTime(utcnow(), 'MM'), formatDateTime(utcnow(), 'dd'), formatDateTime(addhours(utcnow(),-5), 'hh'),formatDateTime(utcnow(), 'mm'),formatDateTime(utcnow(), 'ss'),'.txt')\n",
 							"type": "Expression"
 						},
+						"folderPath": {
+							"value": "@{formatDateTime(utcnow(),'yyyy')}/@{formatDateTime(utcnow(),'MM')}/@{formatDateTime(utcnow(),'dd')}",
+							"type": "Expression"
+						},
 						"fileSystem": {
-							"value": "raw/@{formatDateTime(utcnow(),'yyyy')}/@{formatDateTime(utcnow(),'MM')}/@{formatDateTime(utcnow(),'dd')}\n",
+							"value": "dataset().Data_Destination_Container",
 							"type": "Expression"
 						}
 					},
