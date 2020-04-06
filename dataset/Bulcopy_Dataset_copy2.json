@@ -1,0 +1,48 @@
+{
+	"name": "Bulcopy_Dataset_copy2",
+	"properties": {
+		"description": "Connection to your data destination store.",
+		"linkedServiceName": {
+			"referenceName": "adls2_bulk",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Data_Destination_Container": {
+				"type": "String"
+			},
+			"Data_Destination_Directory": {
+				"type": "String"
+			},
+			"filename": {
+				"type": "string"
+			},
+			"TableName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(dataset().filename,formatDateTime(utcnow(), 'yyyy'), formatDateTime(utcnow(), 'MM'), formatDateTime(utcnow(), 'dd'), formatDateTime(addhours(utcnow(),-5), 'hh'),formatDateTime(utcnow(), 'mm'),formatDateTime(utcnow(), 'ss'),'.txt')\n",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().TableName",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "raw/@{formatDateTime(utcnow(),'yyyy')}/@{formatDateTime(utcnow(),'MM')}/@{formatDateTime(utcnow(),'dd')}",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
