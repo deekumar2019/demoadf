@@ -111,7 +111,7 @@
 											"value": "@pipeline().parameters.Data_Destination_Directory",
 											"type": "Expression"
 										},
-										"fineName": "@item().fileName"
+										"fileName": "@item().SourceTableName"
 									}
 								}
 							]

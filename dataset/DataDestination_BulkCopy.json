@@ -13,7 +13,7 @@
 			"Data_Destination_Directory": {
 				"type": "String"
 			},
-			"fineName": {
+			"fileName": {
 				"type": "string"
 			}
 		},
