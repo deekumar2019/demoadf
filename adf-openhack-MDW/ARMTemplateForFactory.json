@@ -2433,7 +2433,7 @@
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "@{formatDateTime(utcnow(),'yyyy')}/@{formatDateTime(utcnow(),'MM')}/@{formatDateTime(utcnow(),'dd')}",
+							"value": "@dataset().TableName",
 							"type": "Expression"
 						},
 						"fileSystem": {
