@@ -6099,6 +6099,9 @@
 					},
 					"Data_Destination_Directory": {
 						"type": "String"
+					},
+					"fileName": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -6106,12 +6109,16 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().filename,formatDateTime(utcnow(), 'yyyy'), formatDateTime(utcnow(), 'MM'), formatDateTime(utcnow(), 'dd'), formatDateTime(addhours(utcnow(),-5), 'hh'),formatDateTime(utcnow(), 'mm'),formatDateTime(utcnow(), 'ss'),'.csv')\n",
+							"type": "Expression"
+						},
 						"folderPath": {
 							"value": "@{dataset().Data_Destination_Directory}",
 							"type": "Expression"
 						},
 						"fileSystem": {
-							"value": "@{dataset().Data_Destination_Container}",
+							"value": "concat(@{dataset().Data_Destination_Container},'/',formatDateTime(utcnow(), 'yyyy'),'/ ',formatDateTime(utcnow(), 'MM'),'/ ',formatDateTime(utcnow(), 'dd'))",
 							"type": "Expression"
 						}
 					},
@@ -6241,7 +6248,8 @@
 												"Data_Destination_Directory": {
 													"value": "@pipeline().parameters.Data_Destination_Directory",
 													"type": "Expression"
-												}
+												},
+												"fileName": "@item().SourceTableName"
 											}
 										}
 									]
