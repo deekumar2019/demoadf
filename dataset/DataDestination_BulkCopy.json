@@ -12,6 +12,9 @@
 			},
 			"Data_Destination_Directory": {
 				"type": "String"
+			},
+			"fineName": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -19,6 +22,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(dataset().filename,formatDateTime(utcnow(), 'yyyy'), formatDateTime(utcnow(), 'MM'), formatDateTime(utcnow(), 'dd'), formatDateTime(addhours(utcnow(),-5), 'hh'),formatDateTime(utcnow(), 'mm'),formatDateTime(utcnow(), 'ss'),'.csv')\n",
+					"type": "Expression"
+				},
 				"folderPath": {
 					"value": "@{dataset().Data_Destination_Directory}",
 					"type": "Expression"
