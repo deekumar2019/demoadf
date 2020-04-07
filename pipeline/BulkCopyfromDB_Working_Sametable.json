@@ -101,7 +101,12 @@
 							"outputs": [
 								{
 									"referenceName": "DataDestination_BulkCopy_Sametable",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"Data_Destination_Container": "@pipeline().parameters.Data_Destination_Container",
+										"Data_Destination_Directory": "@pipeline().parameters.Data_Destination_Directory",
+										"fileName": "@item().SourceTableName"
+									}
 								}
 							]
 						}
