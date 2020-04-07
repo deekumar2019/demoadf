@@ -6399,17 +6399,11 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "DataDestination_BulkCopy",
+											"referenceName": "DataDestination_BulkCopy_Sametable",
 											"type": "DatasetReference",
 											"parameters": {
-												"Data_Destination_Container": {
-													"value": "@pipeline().parameters.Data_Destination_Container",
-													"type": "Expression"
-												},
-												"Data_Destination_Directory": {
-													"value": "@pipeline().parameters.Data_Destination_Directory",
-													"type": "Expression"
-												},
+												"Data_Destination_Container": "@pipeline().parameters.Data_Destination_Container",
+												"Data_Destination_Directory": "@pipeline().parameters.Data_Destination_Directory",
 												"fileName": "@item().SourceTableName"
 											}
 										}
@@ -6444,7 +6438,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseExternal_ControlTable4')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseDataSource4')]",
-				"[concat(variables('factoryId'), '/datasets/DataDestination_BulkCopy')]"
+				"[concat(variables('factoryId'), '/datasets/DataDestination_BulkCopy_Sametable')]"
 			]
 		},
 		{
