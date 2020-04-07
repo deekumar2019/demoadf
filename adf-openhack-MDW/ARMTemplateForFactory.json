@@ -3288,7 +3288,7 @@
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "@{dataset().fileName}",
+							"value": "@{dataset().Data_Destination_Directory}",
 							"type": "Expression"
 						},
 						"fileSystem": {
