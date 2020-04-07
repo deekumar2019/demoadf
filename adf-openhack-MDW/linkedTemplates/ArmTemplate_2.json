@@ -43,7 +43,7 @@
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "if(equals(@{dataset().Data_Destination_Directory}, 'SourceTableName'), @{dataset().fileName},@{dataset().Data_Destination_Directory})",
+							"value": "if(equals(@{dataset().Data_Destination_Directory}, \"SourceTableName\"), @{dataset().fileName},@{dataset().Data_Destination_Directory})",
 							"type": "Expression"
 						},
 						"fileSystem": {
