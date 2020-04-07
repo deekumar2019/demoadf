@@ -942,7 +942,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/BulkCopyfromDB_with_ControlTable2')]",
+			"name": "[concat(parameters('factoryName'), '/BulkCopyfromDB_with_ControlTable_Working1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
