@@ -1,0 +1,645 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-openhack-MDW"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyPipeline_ADX')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_3wm",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "inbound-processes//"
+							},
+							{
+								"name": "Destination",
+								"value": "Newblobtable"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*"
+								}
+							},
+							"sink": {
+								"type": "AzureDataExplorerSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['quote_id']"
+										},
+										"sink": {
+											"name": "quote_id",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "$['policy_id']"
+										},
+										"sink": {
+											"name": "policy_id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tel_1']"
+										},
+										"sink": {
+											"name": "tel_1",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tel_2']"
+										},
+										"sink": {
+											"name": "tel_2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['email_1']"
+										},
+										"sink": {
+											"name": "email_1",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_1']"
+										},
+										"sink": {
+											"name": "geo_street_1",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_2']"
+										},
+										"sink": {
+											"name": "geo_street_2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_3']"
+										},
+										"sink": {
+											"name": "geo_street_3",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_town']"
+										},
+										"sink": {
+											"name": "geo_town",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_postcode']"
+										},
+										"sink": {
+											"name": "geo_postcode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_country_code']"
+										},
+										"sink": {
+											"name": "geo_country_code",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_value']"
+										},
+										"sink": {
+											"name": "quote_value",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_currency']"
+										},
+										"sink": {
+											"name": "quote_currency",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_given_date']"
+										},
+										"sink": {
+											"name": "quote_given_date",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_valid_date']"
+										},
+										"sink": {
+											"name": "quote_valid_date",
+											"type": "DateTime"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_3wm",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_3wm",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_3wm')]",
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_3wm')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyPipeline_test')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_h2d",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "inbound-processes//"
+							},
+							{
+								"name": "Destination",
+								"value": "Newblobtable"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 0
+								}
+							},
+							"sink": {
+								"type": "AzureDataExplorerSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['quote_id']"
+										},
+										"sink": {
+											"name": "quote_id",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "$['policy_id']"
+										},
+										"sink": {
+											"name": "policy_id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tel_1']"
+										},
+										"sink": {
+											"name": "tel_1",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tel_2']"
+										},
+										"sink": {
+											"name": "tel_2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['email_1']"
+										},
+										"sink": {
+											"name": "email_1",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_1']"
+										},
+										"sink": {
+											"name": "geo_street_1",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_2']"
+										},
+										"sink": {
+											"name": "geo_street_2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_3']"
+										},
+										"sink": {
+											"name": "geo_street_3",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_town']"
+										},
+										"sink": {
+											"name": "geo_town",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_postcode']"
+										},
+										"sink": {
+											"name": "geo_postcode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_country_code']"
+										},
+										"sink": {
+											"name": "geo_country_code",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_value']"
+										},
+										"sink": {
+											"name": "quote_value",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_currency']"
+										},
+										"sink": {
+											"name": "quote_currency",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_given_date']"
+										},
+										"sink": {
+											"name": "quote_given_date",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_valid_date']"
+										},
+										"sink": {
+											"name": "quote_valid_date",
+											"type": "DateTime"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_h2d",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_h2d",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_h2d')]",
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_h2d')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_3wm')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataExplorer1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureDataExplorerTable",
+				"schema": [],
+				"typeProperties": {
+					"table": "Newblobtable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataExplorer1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_h2d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataExplorer1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureDataExplorerTable",
+				"schema": [],
+				"typeProperties": {
+					"table": "Newblobtable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataExplorer1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_3wm')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adx_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "inbound-processes"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"quote_id": {
+							"type": "string"
+						},
+						"policy_id": {
+							"type": "string"
+						},
+						"tel_1": {
+							"type": "string"
+						},
+						"tel_2": {
+							"type": "string"
+						},
+						"email_1": {
+							"type": "string"
+						},
+						"geo_street_1": {
+							"type": "string"
+						},
+						"geo_street_2": {
+							"type": "string"
+						},
+						"geo_street_3": {
+							"type": "string"
+						},
+						"geo_town": {
+							"type": "string"
+						},
+						"geo_postcode": {
+							"type": "string"
+						},
+						"geo_country_code": {
+							"type": "string"
+						},
+						"quote_value": {
+							"type": "string"
+						},
+						"quote_currency": {
+							"type": "string"
+						},
+						"quote_given_date": {
+							"type": "string"
+						},
+						"quote_valid_date": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adx_storage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_h2d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adx_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "inbound-processes"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"quote_id": {
+							"type": "string"
+						},
+						"policy_id": {
+							"type": "string"
+						},
+						"tel_1": {
+							"type": "string"
+						},
+						"tel_2": {
+							"type": "string"
+						},
+						"email_1": {
+							"type": "string"
+						},
+						"geo_street_1": {
+							"type": "string"
+						},
+						"geo_street_2": {
+							"type": "string"
+						},
+						"geo_street_3": {
+							"type": "string"
+						},
+						"geo_town": {
+							"type": "string"
+						},
+						"geo_postcode": {
+							"type": "string"
+						},
+						"geo_country_code": {
+							"type": "string"
+						},
+						"quote_value": {
+							"type": "string"
+						},
+						"quote_currency": {
+							"type": "string"
+						},
+						"quote_given_date": {
+							"type": "string"
+						},
+						"quote_valid_date": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adx_storage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataExplorer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDataExplorer",
+				"typeProperties": {
+					"endpoint": "https://adxlabclustrdk.eastus2.kusto.windows.net",
+					"tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+					"servicePrincipalId": "933b9727-3db8-47e6-af7d-a6b2a47080f2",
+					"servicePrincipalKey": {
+						"type": "SecureString",
+						"value": "**********"
+					},
+					"database": "adxlabdatabase"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adx_storage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "https://adxdatalakedk.dfs.core.windows.net",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "**********"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

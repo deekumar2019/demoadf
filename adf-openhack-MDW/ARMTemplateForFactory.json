@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ADLS_Storage_Southridge'"
 		},
+		"AzureDataExplorer1_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'AzureDataExplorer1'"
+		},
 		"AzureSqlDatabase1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
@@ -75,9 +79,25 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'adls2_incr'"
 		},
+		"adx_storage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adx_storage'"
+		},
 		"ADLS2_MDW_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"AzureDataExplorer1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "933b9727-3db8-47e6-af7d-a6b2a47080f2"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adxlabdatabase"
 		},
 		"FourthCoffee_Files_properties_typeProperties_host": {
 			"type": "string",
@@ -110,6 +130,10 @@
 		"adls2_incr_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adfstoragedee.dfs.core.windows.net"
+		},
+		"adx_storage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adxdatalakedk.dfs.core.windows.net"
 		}
 	},
 	"variables": {
@@ -270,7 +294,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/BulkCopyfromDB_with_ControlTable')]",
+			"name": "[concat(parameters('factoryName'), '/BulkCopyfromDB_Working_Sametable')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -285,7 +309,7 @@
 							"timeout": "7.00:00:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
-							"secureOutput": true,
+							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
@@ -298,11 +322,11 @@
 								}
 							},
 							"dataset": {
-								"referenceName": "AzureSqlDatabaseExternal_ControlTable2",
+								"referenceName": "AzureSqlDatabaseExternal_ControlTable4",
 								"type": "DatasetReference",
 								"parameters": {
 									"TableName": {
-										"value": "@pipeline().parameters.Control_Table_Schema_SourceTableName",
+										"value": "@pipeline().parameters.Control_Table_Name",
 										"type": "Expression"
 									}
 								}
@@ -367,26 +391,19 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "AzureSqlDatabaseDataSource2",
+											"referenceName": "AzureSqlDatabaseDataSource4",
 											"type": "DatasetReference",
 											"parameters": {}
 										}
 									],
 									"outputs": [
 										{
-											"referenceName": "Bulcopy_Dataset",
+											"referenceName": "DataDestination_BulkCopy_Sametable",
 											"type": "DatasetReference",
 											"parameters": {
-												"Data_Destination_Container": {
-													"value": "@pipeline().parameters.Data_Destination_Container",
-													"type": "Expression"
-												},
-												"Data_Destination_Directory": {
-													"value": "@pipeline().parameters.Data_Destination_Directory",
-													"type": "Expression"
-												},
-												"filename": "@item().SourceTableName",
-												"TableName": "@item().SourceTableName"
+												"Data_Destination_Container": "@pipeline().parameters.Data_Destination_Container",
+												"Data_Destination_Directory": "@pipeline().parameters.Data_Destination_Directory",
+												"fileName": "@item().SourceTableName"
 											}
 										}
 									]
@@ -418,9 +435,9 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseExternal_ControlTable2')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseDataSource2')]",
-				"[concat(variables('factoryId'), '/datasets/Bulcopy_Dataset')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseExternal_ControlTable4')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseDataSource4')]",
+				"[concat(variables('factoryId'), '/datasets/DataDestination_BulkCopy_Sametable')]"
 			]
 		},
 		{
@@ -649,6 +666,210 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SourceDataset_4y8')]",
 				"[concat(variables('factoryId'), '/datasets/DestinationDataset_4y8')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyPipeline_ADX')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_3wm",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "inbound-processes//"
+							},
+							{
+								"name": "Destination",
+								"value": "Newblobtable"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*"
+								}
+							},
+							"sink": {
+								"type": "AzureDataExplorerSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['quote_id']"
+										},
+										"sink": {
+											"name": "quote_id",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "$['policy_id']"
+										},
+										"sink": {
+											"name": "policy_id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tel_1']"
+										},
+										"sink": {
+											"name": "tel_1",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tel_2']"
+										},
+										"sink": {
+											"name": "tel_2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['email_1']"
+										},
+										"sink": {
+											"name": "email_1",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_1']"
+										},
+										"sink": {
+											"name": "geo_street_1",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_2']"
+										},
+										"sink": {
+											"name": "geo_street_2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_3']"
+										},
+										"sink": {
+											"name": "geo_street_3",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_town']"
+										},
+										"sink": {
+											"name": "geo_town",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_postcode']"
+										},
+										"sink": {
+											"name": "geo_postcode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_country_code']"
+										},
+										"sink": {
+											"name": "geo_country_code",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_value']"
+										},
+										"sink": {
+											"name": "quote_value",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_currency']"
+										},
+										"sink": {
+											"name": "quote_currency",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_given_date']"
+										},
+										"sink": {
+											"name": "quote_given_date",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_valid_date']"
+										},
+										"sink": {
+											"name": "quote_valid_date",
+											"type": "DateTime"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_3wm",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_3wm",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_3wm')]",
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_3wm')]"
 			]
 		},
 		{
@@ -1388,6 +1609,214 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SourceDataset_g94')]",
 				"[concat(variables('factoryId'), '/datasets/DestinationDataset_g94')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyPipeline_test')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_h2d",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "inbound-processes//"
+							},
+							{
+								"name": "Destination",
+								"value": "Newblobtable"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 0
+								}
+							},
+							"sink": {
+								"type": "AzureDataExplorerSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['quote_id']"
+										},
+										"sink": {
+											"name": "quote_id",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "$['policy_id']"
+										},
+										"sink": {
+											"name": "policy_id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tel_1']"
+										},
+										"sink": {
+											"name": "tel_1",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tel_2']"
+										},
+										"sink": {
+											"name": "tel_2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['email_1']"
+										},
+										"sink": {
+											"name": "email_1",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_1']"
+										},
+										"sink": {
+											"name": "geo_street_1",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_2']"
+										},
+										"sink": {
+											"name": "geo_street_2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_street_3']"
+										},
+										"sink": {
+											"name": "geo_street_3",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_town']"
+										},
+										"sink": {
+											"name": "geo_town",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_postcode']"
+										},
+										"sink": {
+											"name": "geo_postcode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['geo_country_code']"
+										},
+										"sink": {
+											"name": "geo_country_code",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_value']"
+										},
+										"sink": {
+											"name": "quote_value",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_currency']"
+										},
+										"sink": {
+											"name": "quote_currency",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_given_date']"
+										},
+										"sink": {
+											"name": "quote_given_date",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "$['quote_valid_date']"
+										},
+										"sink": {
+											"name": "quote_valid_date",
+											"type": "DateTime"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_h2d",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_h2d",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_h2d')]",
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_h2d')]"
 			]
 		},
 		{
@@ -3316,6 +3745,56 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DataDestination_BulkCopy_Sametable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your data destination store.",
+				"linkedServiceName": {
+					"referenceName": "ADLS2_MDW",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Data_Destination_Container": {
+						"type": "String"
+					},
+					"Data_Destination_Directory": {
+						"type": "String"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().filename,formatDateTime(utcnow(), 'yyyy'), formatDateTime(utcnow(), 'MM'), formatDateTime(utcnow(), 'dd'), formatDateTime(addhours(utcnow(),-5), 'hh'),formatDateTime(utcnow(), 'mm'),formatDateTime(utcnow(), 'ss'),'.csv')\n",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@{dataset().Data_Destination_Directory}",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@{dataset().Data_Destination_Container}/@{formatDateTime(utcnow(), 'yyyy')}/@{formatDateTime(utcnow(), 'MM')}/@{formatDateTime(addhours(utcnow(),-5), 'dd')}",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ADLS2_MDW')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DestinationDataset_14u')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3350,6 +3829,26 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ADLS_Storage_Southridge')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_3wm')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataExplorer1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureDataExplorerTable",
+				"schema": [],
+				"typeProperties": {
+					"table": "Newblobtable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataExplorer1')]"
 			]
 		},
 		{
@@ -3579,6 +4078,26 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ADLS2_MDW')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_h2d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataExplorer1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureDataExplorerTable",
+				"schema": [],
+				"typeProperties": {
+					"table": "Newblobtable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataExplorer1')]"
 			]
 		},
 		{
@@ -4538,6 +5057,78 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_3wm')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adx_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "inbound-processes"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"quote_id": {
+							"type": "string"
+						},
+						"policy_id": {
+							"type": "string"
+						},
+						"tel_1": {
+							"type": "string"
+						},
+						"tel_2": {
+							"type": "string"
+						},
+						"email_1": {
+							"type": "string"
+						},
+						"geo_street_1": {
+							"type": "string"
+						},
+						"geo_street_2": {
+							"type": "string"
+						},
+						"geo_street_3": {
+							"type": "string"
+						},
+						"geo_town": {
+							"type": "string"
+						},
+						"geo_postcode": {
+							"type": "string"
+						},
+						"geo_country_code": {
+							"type": "string"
+						},
+						"quote_value": {
+							"type": "string"
+						},
+						"quote_currency": {
+							"type": "string"
+						},
+						"quote_given_date": {
+							"type": "string"
+						},
+						"quote_valid_date": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adx_storage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SourceDataset_4y8')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -4776,6 +5367,78 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ADLS2_MDW')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_h2d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adx_storage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "inbound-processes"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"quote_id": {
+							"type": "string"
+						},
+						"policy_id": {
+							"type": "string"
+						},
+						"tel_1": {
+							"type": "string"
+						},
+						"tel_2": {
+							"type": "string"
+						},
+						"email_1": {
+							"type": "string"
+						},
+						"geo_street_1": {
+							"type": "string"
+						},
+						"geo_street_2": {
+							"type": "string"
+						},
+						"geo_street_3": {
+							"type": "string"
+						},
+						"geo_town": {
+							"type": "string"
+						},
+						"geo_postcode": {
+							"type": "string"
+						},
+						"geo_country_code": {
+							"type": "string"
+						},
+						"quote_value": {
+							"type": "string"
+						},
+						"quote_currency": {
+							"type": "string"
+						},
+						"quote_given_date": {
+							"type": "string"
+						},
+						"quote_valid_date": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adx_storage')]"
 			]
 		},
 		{
@@ -5731,6 +6394,26 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataExplorer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDataExplorer",
+				"typeProperties": {
+					"endpoint": "https://adxlabclustrdk.eastus2.kusto.windows.net",
+					"tenant": "[parameters('AzureDataExplorer1_properties_typeProperties_tenant')]",
+					"servicePrincipalId": "[parameters('AzureDataExplorer1_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataExplorer1_servicePrincipalKey')]"
+					},
+					"database": "[parameters('AzureDataExplorer1_properties_typeProperties_database')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -5949,6 +6632,23 @@
 					"accountKey": {
 						"type": "SecureString",
 						"value": "[parameters('adls2_incr_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adx_storage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('adx_storage_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('adx_storage_accountKey')]"
 					}
 				}
 			},
@@ -6292,203 +6992,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Southridge_Streaming')]",
 				"[concat(variables('factoryId'), '/datasets/Streaming')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/BulkCopyfromDB_Working_Sametable')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Copy huge amount of data in bulk from database using external control table to store source table list with partitions for each table.\n\nWhen you want to migrate data from your data warehouse like Oracle server, Netezza server, Teradata server or SQL Server to Azure, you have to load huge amount of data from multiple tables in data sources. In most cases, data has to be further partitioned in each table so that you can load rows with multiple threads in parallel from single table.",
-				"activities": [
-					{
-						"name": "GetPartitionList",
-						"description": "Lookup activity to retrieve the list of partitions stored in the external control table.",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlSource",
-								"sqlReaderQuery": {
-									"value": "select @{pipeline().parameters.Control_Table_Schema_PartitionID} as PartitionID, @{pipeline().parameters.Control_Table_Schema_SourceTableName} as SourceTableName, @{pipeline().parameters.Control_Table_Schema_FilterQuery} as FilterQuery from @{pipeline().parameters.Control_Table_Name}",
-									"type": "Expression"
-								}
-							},
-							"dataset": {
-								"referenceName": "AzureSqlDatabaseExternal_ControlTable4",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": {
-										"value": "@pipeline().parameters.Control_Table_Name",
-										"type": "Expression"
-									}
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEachPartition",
-						"description": "ForEach activity to get the partition list from Lookup activity and then iterate each of them to Copy activity. ",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "GetPartitionList",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('GetPartitionList').output.value",
-								"type": "Expression"
-							},
-							"batchCount": 5,
-							"activities": [
-								{
-									"name": "CopyOnePartition",
-									"description": "Copy activity to copy each partition from source database store to destination store.",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SqlSource",
-											"sqlReaderQuery": {
-												"value": "@item().FilterQuery",
-												"type": "Expression"
-											}
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"quoteAllText": true,
-												"fileExtension": ".txt"
-											}
-										},
-										"enableStaging": false,
-										"dataIntegrationUnits": 0
-									},
-									"inputs": [
-										{
-											"referenceName": "AzureSqlDatabaseDataSource4",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "DataDestination_BulkCopy_Sametable",
-											"type": "DatasetReference",
-											"parameters": {
-												"Data_Destination_Container": "@pipeline().parameters.Data_Destination_Container",
-												"Data_Destination_Directory": "@pipeline().parameters.Data_Destination_Directory",
-												"fileName": "@item().SourceTableName"
-											}
-										}
-									]
-								}
-							]
-						}
-					}
-				],
-				"parameters": {
-					"Control_Table_Name": {
-						"type": "String"
-					},
-					"Control_Table_Schema_PartitionID": {
-						"type": "String"
-					},
-					"Control_Table_Schema_SourceTableName": {
-						"type": "String"
-					},
-					"Control_Table_Schema_FilterQuery": {
-						"type": "String"
-					},
-					"Data_Destination_Container": {
-						"type": "String"
-					},
-					"Data_Destination_Directory": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseExternal_ControlTable4')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseDataSource4')]",
-				"[concat(variables('factoryId'), '/datasets/DataDestination_BulkCopy_Sametable')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataDestination_BulkCopy_Sametable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Connection to your data destination store.",
-				"linkedServiceName": {
-					"referenceName": "ADLS2_MDW",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Data_Destination_Container": {
-						"type": "String"
-					},
-					"Data_Destination_Directory": {
-						"type": "String"
-					},
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@concat(dataset().filename,formatDateTime(utcnow(), 'yyyy'), formatDateTime(utcnow(), 'MM'), formatDateTime(utcnow(), 'dd'), formatDateTime(addhours(utcnow(),-5), 'hh'),formatDateTime(utcnow(), 'mm'),formatDateTime(utcnow(), 'ss'),'.csv')\n",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@{dataset().Data_Destination_Directory}",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@{dataset().Data_Destination_Container}/@{formatDateTime(utcnow(), 'yyyy')}/@{formatDateTime(utcnow(), 'MM')}/@{formatDateTime(addhours(utcnow(),-5), 'dd')}",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ADLS2_MDW')]"
 			]
 		}
 	]

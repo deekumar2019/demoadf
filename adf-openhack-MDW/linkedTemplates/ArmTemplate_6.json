@@ -13,6 +13,335 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_msr')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FourthCoffee_Files",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ActorID",
+						"type": "String"
+					},
+					{
+						"name": "ActorName",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_s2q')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Vanarsdel_SQLDB",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_table": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_v9i')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FourthCoffee_Files",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_w67')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FourthCoffee_Files",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Customers')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CloudsalesCustomers",
+								"type": "DatasetReference"
+							},
+							"name": "CloudsalesCustomers"
+						},
+						{
+							"dataset": {
+								"referenceName": "CloudsalesAddresses",
+								"type": "DatasetReference"
+							},
+							"name": "CloudsalesAddresses"
+						},
+						{
+							"dataset": {
+								"referenceName": "FourthcoffeeCustomers",
+								"type": "DatasetReference"
+							},
+							"name": "FourthCoffeeCustomers"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_VACustomers",
+								"type": "DatasetReference"
+							},
+							"name": "VACustomers"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Customers",
+								"type": "DatasetReference"
+							},
+							"name": "Customers"
+						},
+						{
+							"dataset": {
+								"referenceName": "CustomersFC",
+								"type": "DatasetReference"
+							},
+							"name": "CustomersFC"
+						},
+						{
+							"dataset": {
+								"referenceName": "CustomersVA",
+								"type": "DatasetReference"
+							},
+							"name": "CustomersVA"
+						}
+					],
+					"transformations": [
+						{
+							"name": "NewColsAddedCloudsales"
+						},
+						{
+							"name": "NewColsAddedCloudsalesAddr"
+						},
+						{
+							"name": "CloudsalesCustomerAddr"
+						},
+						{
+							"name": "DateColumns"
+						},
+						{
+							"name": "CloudsalesCustomerAddresses"
+						},
+						{
+							"name": "NewColsAddedFC"
+						},
+						{
+							"name": "NewColsAddedVA"
+						}
+					],
+					"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CloudsalesCustomers\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CloudsalesAddresses\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date,\n\t\tUpdatedDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> FourthCoffeeCustomers\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> VACustomers\nCloudsalesCustomers derive(SourceSystemId = 1,\n\t\tGlobalCustomerID = uuid()) ~> NewColsAddedCloudsales\nCloudsalesAddresses derive(SourceSystemId = 1,\n\t\tGlobalCustomerID = uuid()) ~> NewColsAddedCloudsalesAddr\nNewColsAddedCloudsales, NewColsAddedCloudsalesAddr join(CloudsalesCustomers@CustomerID == CloudsalesAddresses@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> CloudsalesCustomerAddr\nCloudsalesCustomerAddr derive(CustomerCreatedDate = iif(CloudsalesCustomers@CreatedDate>CloudsalesAddresses@CreatedDate,CloudsalesCustomers@CreatedDate,CloudsalesAddresses@CreatedDate),\n\t\tCustomerUpdatedDate = iif(CloudsalesCustomers@UpdatedDate>CloudsalesAddresses@UpdatedDate,CloudsalesCustomers@UpdatedDate,CloudsalesAddresses@UpdatedDate )) ~> DateColumns\nDateColumns select(mapColumn(\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tSourceSystemCustomerID = NewColsAddedCloudsales@GlobalCustomerID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tSourceSystemIdID = NewColsAddedCloudsalesAddr@SourceSystemId,\n\t\tGlobalCustomerID = NewColsAddedCloudsalesAddr@GlobalCustomerID,\n\t\tCustomerCreatedDate,\n\t\tCustomerUpdatedDate\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> CloudsalesCustomerAddresses\nFourthCoffeeCustomers derive(SourceSystemId = 2,\n\t\tGlobalCustomerID = uuid()) ~> NewColsAddedFC\nVACustomers derive(SourceSystemId = 3,\n\t\tGlobalCustomerID = uuid()) ~> NewColsAddedVA\nCloudsalesCustomerAddresses sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Customers\nNewColsAddedFC sink(input(\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tSourceSystemCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tSourceSystemIdID as string,\n\t\tGlobalCustomerID as string,\n\t\tCustomerCreatedDate as string,\n\t\tCustomerUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CustomersFC\nNewColsAddedVA sink(input(\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tSourceSystemCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tSourceSystemIdID as string,\n\t\tGlobalCustomerID as string,\n\t\tCustomerCreatedDate as string,\n\t\tCustomerUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CustomersVA"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Movie_Catalog_DataflowSR')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CosmosDb_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "SRDataset"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "final_MovieCatalog",
+								"type": "DatasetReference"
+							},
+							"name": "FinalMovieCatalog"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tavailabilityDate as string,\n\t\tgenre as string,\n\t\tid as string,\n\t\tname as string,\n\t\trating as string,\n\t\treleaseYear as integer,\n\t\truntime as integer,\n\t\tstreamingAvailabilityDate as string,\n\t\ttitle as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'SELECT f.id,c.name,f.title,f.genre,f.rating,f.runtime,f.releaseYear,f.availabilityDate,f.streamingAvailabilityDate FROM movies f JOIN c IN f.actors ',\n\tformat: 'documentQuery',\n\tsystemColumns: false) ~> SRDataset\nSRDataset sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> FinalMovieCatalog"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Rental_Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Rental_Transactions",
+								"type": "DatasetReference"
+							},
+							"name": "RentalTxns"
+						},
+						{
+							"dataset": {
+								"referenceName": "Vanarsdel_Txns",
+								"type": "DatasetReference"
+							},
+							"name": "VanarsdelTxns"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "RentalDataset",
+								"type": "DatasetReference"
+							},
+							"name": "Rental"
+						}
+					],
+					"transformations": [
+						{
+							"name": "RentalData"
+						},
+						{
+							"name": "NewColumnsAdded"
+						},
+						{
+							"name": "VARentalData"
+						},
+						{
+							"name": "VaNewColsAdded"
+						},
+						{
+							"name": "RentalTxnsCombined"
+						}
+					],
+					"script": "source(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as string,\n\t\tReturnDate as string,\n\t\tRentalCost as float,\n\t\tLateFee as float,\n\t\tRewindFlag as boolean,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> RentalTxns\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as string,\n\t\tReturnDate as string,\n\t\tRentalCost as float,\n\t\tLateFee as float,\n\t\tRewindFlag as boolean,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> VanarsdelTxns\nRentalTxns select(mapColumn(\n\t\tSourceSystemTransactionID = TransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tRentalDate,\n\t\tReturnDate,\n\t\tRentalCost,\n\t\tLateFee,\n\t\tRewindFlag,\n\t\tCreatedDate,\n\t\tUpdatedDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RentalData\nRentalData derive(SourceSystemId = 2,\n\t\tGlobalTransactionID = uuid()) ~> NewColumnsAdded\nVanarsdelTxns select(mapColumn(\n\t\tSourceSystemTransactionID = TransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tRentalDate,\n\t\tReturnDate,\n\t\tRentalCost,\n\t\tLateFee,\n\t\tRewindFlag,\n\t\tCreatedDate,\n\t\tUpdatedDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> VARentalData\nVARentalData derive(SourceSystemId = 3,\n\t\tGlobalTransactionID = uuid()) ~> VaNewColsAdded\nNewColumnsAdded, VaNewColsAdded union(byName: true)~> RentalTxnsCombined\nRentalTxnsCombined sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Rental"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Southridge_sales_dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Orders",
+								"type": "DatasetReference"
+							},
+							"name": "Orders"
+						},
+						{
+							"dataset": {
+								"referenceName": "OrderDetails",
+								"type": "DatasetReference"
+							},
+							"name": "Orderdetail"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SalesOrders",
+								"type": "DatasetReference"
+							},
+							"name": "SalesOrderDetail"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SalesOrders"
+						},
+						{
+							"name": "SalesOrderConformed",
+							"description": "Autogenerated by data preview actions"
+						},
+						{
+							"name": "SalesStaging"
+						}
+					],
+					"script": "source(output(\n\t\tOrderID as string,\n\t\tCustomerID as string,\n\t\tOrderDate as string,\n\t\tShipDate as string,\n\t\tTotalCost as double,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> Orders\nsource(output(\n\t\tOrderDetailID as string,\n\t\tOrderID as string,\n\t\tMovieID as string,\n\t\tQuantity as integer,\n\t\tUnitCost as string,\n\t\tLineNumber as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> Orderdetail\nOrders, Orderdetail join(Orders@OrderID == Orderdetail@OrderID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> SalesOrders\nSalesOrders select(mapColumn(\n\t\tOrderID = Orders@OrderID,\n\t\tCustomerID,\n\t\tOrderDate,\n\t\tShipDate,\n\t\tTotalCost,\n\t\tOrderDetailID,\n\t\tMovieID,\n\t\tQuantity,\n\t\tUnitCost,\n\t\tLineNumber\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> SalesOrderConformed\nSalesOrderConformed derive(SourceId = 1,\n\t\tUniqueOrderID = uuid(),\n\t\tUniqueMovieID = concat('1',MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID)) ~> SalesStaging\nSalesStaging sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tmapColumn(\n\t\tOrderID,\n\t\tCustomerID,\n\t\tOrderDate,\n\t\tShipDate,\n\t\tTotalCost,\n\t\tOrderDetailID,\n\t\tMovieID,\n\t\tQuantity,\n\t\tUnitCost,\n\t\tLineNumber,\n\t\tSourceId,\n\t\tUniqueOrderID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID\n\t)) ~> SalesOrderDetail"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Streaming_dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -47,149 +376,6 @@
 					],
 					"script": "source(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as timestamp,\n\t\tStreamEnd as timestamp,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> SouthridgeStreaming\nSouthridgeStreaming derive(SourceSystemID = 1,\n\t\tGlobalTransactionid = uuid(),\n\t\tSourceSystemTransactionID = concat('1',TransactionID),\n\t\tUniqueMovieID = concat('1',MovieID),\n\t\tUniqueCustomerID = concat('1',CustomerID)) ~> NewColsAdded\nNewColsAdded select(mapColumn(\n\t\tStreamStart,\n\t\tStreamEnd,\n\t\tCreatedDate,\n\t\tUpdatedDate,\n\t\tSourceSystemID,\n\t\tGlobalTransactionid,\n\t\tSourceSystemTransactionID,\n\t\tUniqueMovieID,\n\t\tUniqueCustomerID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> StreamingConformed\nStreamingConformed sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> Streaming"
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/BulkCopyfromDB_Working_Sametable')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Copy huge amount of data in bulk from database using external control table to store source table list with partitions for each table.\n\nWhen you want to migrate data from your data warehouse like Oracle server, Netezza server, Teradata server or SQL Server to Azure, you have to load huge amount of data from multiple tables in data sources. In most cases, data has to be further partitioned in each table so that you can load rows with multiple threads in parallel from single table.",
-				"activities": [
-					{
-						"name": "GetPartitionList",
-						"description": "Lookup activity to retrieve the list of partitions stored in the external control table.",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlSource",
-								"sqlReaderQuery": {
-									"value": "select @{pipeline().parameters.Control_Table_Schema_PartitionID} as PartitionID, @{pipeline().parameters.Control_Table_Schema_SourceTableName} as SourceTableName, @{pipeline().parameters.Control_Table_Schema_FilterQuery} as FilterQuery from @{pipeline().parameters.Control_Table_Name}",
-									"type": "Expression"
-								}
-							},
-							"dataset": {
-								"referenceName": "AzureSqlDatabaseExternal_ControlTable4",
-								"type": "DatasetReference",
-								"parameters": {
-									"TableName": {
-										"value": "@pipeline().parameters.Control_Table_Name",
-										"type": "Expression"
-									}
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEachPartition",
-						"description": "ForEach activity to get the partition list from Lookup activity and then iterate each of them to Copy activity. ",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "GetPartitionList",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('GetPartitionList').output.value",
-								"type": "Expression"
-							},
-							"batchCount": 5,
-							"activities": [
-								{
-									"name": "CopyOnePartition",
-									"description": "Copy activity to copy each partition from source database store to destination store.",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SqlSource",
-											"sqlReaderQuery": {
-												"value": "@item().FilterQuery",
-												"type": "Expression"
-											}
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"quoteAllText": true,
-												"fileExtension": ".txt"
-											}
-										},
-										"enableStaging": false,
-										"dataIntegrationUnits": 0
-									},
-									"inputs": [
-										{
-											"referenceName": "AzureSqlDatabaseDataSource4",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "DataDestination_BulkCopy_Sametable",
-											"type": "DatasetReference",
-											"parameters": {
-												"Data_Destination_Container": "@pipeline().parameters.Data_Destination_Container",
-												"Data_Destination_Directory": "@pipeline().parameters.Data_Destination_Directory",
-												"fileName": "@item().SourceTableName"
-											}
-										}
-									]
-								}
-							]
-						}
-					}
-				],
-				"parameters": {
-					"Control_Table_Name": {
-						"type": "String"
-					},
-					"Control_Table_Schema_PartitionID": {
-						"type": "String"
-					},
-					"Control_Table_Schema_SourceTableName": {
-						"type": "String"
-					},
-					"Control_Table_Schema_FilterQuery": {
-						"type": "String"
-					},
-					"Data_Destination_Container": {
-						"type": "String"
-					},
-					"Data_Destination_Directory": {
-						"type": "String"
-					}
-				},
-				"annotations": []
 			},
 			"dependsOn": []
 		},
@@ -328,7 +514,9 @@
 				],
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_w67')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CopyPipeline_vanarsdel')]",
@@ -548,7 +736,9 @@
 				],
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Movie_Catalog_DataflowSR')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Customers_pipeline')]",
@@ -593,7 +783,9 @@
 				],
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Customers')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Movie_Pipeline')]",
@@ -633,7 +825,9 @@
 				],
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Movie_Catalog_DataflowSR')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Rental_pipeline')]",
@@ -674,7 +868,9 @@
 				],
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Rental_Dataflow')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Salesdataflow_Pipeline')]",
@@ -715,7 +911,9 @@
 				],
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Southridge_sales_dataflow')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/StreamingPipeline')]",

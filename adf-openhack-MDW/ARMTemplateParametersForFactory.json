@@ -11,6 +11,9 @@
 		"ADLS_Storage_Southridge_connectionString": {
 			"value": ""
 		},
+		"AzureDataExplorer1_servicePrincipalKey": {
+			"value": ""
+		},
 		"AzureSqlDatabase1_connectionString": {
 			"value": ""
 		},
@@ -56,8 +59,20 @@
 		"adls2_incr_accountKey": {
 			"value": ""
 		},
+		"adx_storage_accountKey": {
+			"value": ""
+		},
 		"ADLS2_MDW_properties_typeProperties_url": {
 			"value": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_tenant": {
+			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"AzureDataExplorer1_properties_typeProperties_servicePrincipalId": {
+			"value": "933b9727-3db8-47e6-af7d-a6b2a47080f2"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"value": "adxlabdatabase"
 		},
 		"FourthCoffee_Files_properties_typeProperties_host": {
 			"value": "C:\\Rentals\\"
@@ -82,6 +97,9 @@
 		},
 		"adls2_incr_properties_typeProperties_url": {
 			"value": "https://adfstoragedee.dfs.core.windows.net"
+		},
+		"adx_storage_properties_typeProperties_url": {
+			"value": "https://adxdatalakedk.dfs.core.windows.net"
 		}
 	}
 }

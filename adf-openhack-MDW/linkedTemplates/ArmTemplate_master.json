@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ADLS_Storage_Southridge'"
 		},
+		"AzureDataExplorer1_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'AzureDataExplorer1'"
+		},
 		"AzureSqlDatabase1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
@@ -75,9 +79,25 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'adls2_incr'"
 		},
+		"adx_storage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adx_storage'"
+		},
 		"ADLS2_MDW_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mdwstorageaccount.dfs.core.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"AzureDataExplorer1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "933b9727-3db8-47e6-af7d-a6b2a47080f2"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adxlabdatabase"
 		},
 		"FourthCoffee_Files_properties_typeProperties_host": {
 			"type": "string",
@@ -111,6 +131,10 @@
 			"type": "string",
 			"defaultValue": "https://adfstoragedee.dfs.core.windows.net"
 		},
+		"adx_storage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adxdatalakedk.dfs.core.windows.net"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -143,6 +167,9 @@
 					},
 					"ADLS_Storage_Southridge_connectionString": {
 						"value": "[parameters('ADLS_Storage_Southridge_connectionString')]"
+					},
+					"AzureDataExplorer1_servicePrincipalKey": {
+						"value": "[parameters('AzureDataExplorer1_servicePrincipalKey')]"
 					},
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
@@ -180,8 +207,20 @@
 					"adls2_incr_accountKey": {
 						"value": "[parameters('adls2_incr_accountKey')]"
 					},
+					"adx_storage_accountKey": {
+						"value": "[parameters('adx_storage_accountKey')]"
+					},
 					"ADLS2_MDW_properties_typeProperties_url": {
 						"value": "[parameters('ADLS2_MDW_properties_typeProperties_url')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_tenant": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_tenant')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_servicePrincipalId')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_database": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_database')]"
 					},
 					"OrderDetails_properties_typeProperties_url": {
 						"value": "[parameters('OrderDetails_properties_typeProperties_url')]"
@@ -197,6 +236,9 @@
 					},
 					"adls2_incr_properties_typeProperties_url": {
 						"value": "[parameters('adls2_incr_properties_typeProperties_url')]"
+					},
+					"adx_storage_properties_typeProperties_url": {
+						"value": "[parameters('adx_storage_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -275,24 +317,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"FourthCoffee_Files_password": {
-						"value": "[parameters('FourthCoffee_Files_password')]"
-					},
-					"Vanarsdel_SQLDB_connectionString": {
-						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
-					},
-					"Vanarsdel_SQLDB_password": {
-						"value": "[parameters('Vanarsdel_SQLDB_password')]"
-					},
-					"FourthCoffee_Files_properties_typeProperties_host": {
-						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_host')]"
-					},
-					"FourthCoffee_Files_properties_typeProperties_userId": {
-						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_userId')]"
-					},
-					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
-						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -313,6 +337,24 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"FourthCoffee_Files_password": {
+						"value": "[parameters('FourthCoffee_Files_password')]"
+					},
+					"Vanarsdel_SQLDB_connectionString": {
+						"value": "[parameters('Vanarsdel_SQLDB_connectionString')]"
+					},
+					"Vanarsdel_SQLDB_password": {
+						"value": "[parameters('Vanarsdel_SQLDB_password')]"
+					},
+					"FourthCoffee_Files_properties_typeProperties_host": {
+						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_host')]"
+					},
+					"FourthCoffee_Files_properties_typeProperties_userId": {
+						"value": "[parameters('FourthCoffee_Files_properties_typeProperties_userId')]"
+					},
+					"Vanarsdel_SQLDB_properties_typeProperties_userName": {
+						"value": "[parameters('Vanarsdel_SQLDB_properties_typeProperties_userName')]"
 					}
 				}
 			},
