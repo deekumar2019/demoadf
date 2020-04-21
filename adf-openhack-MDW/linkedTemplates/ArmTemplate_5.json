@@ -584,7 +584,7 @@
 							},
 							"sink": {
 								"type": "AzureDataExplorerSink",
-								"ingestionMappingName": "Exeloninput_mapping"
+								"ingestionMappingName": "ExelonInput_mapping"
 							},
 							"enableStaging": false,
 							"translator": {
@@ -605,7 +605,7 @@
 										},
 										"sink": {
 											"name": "policy_id",
-											"type": "Int32"
+											"type": "String"
 										}
 									},
 									{
@@ -641,7 +641,7 @@
 										},
 										"sink": {
 											"name": "geo_street_1",
-											"type": "Int32"
+											"type": "String"
 										}
 									},
 									{
@@ -695,7 +695,7 @@
 										},
 										"sink": {
 											"name": "quote_value",
-											"type": "Int32"
+											"type": "String"
 										}
 									},
 									{
@@ -713,7 +713,7 @@
 										},
 										"sink": {
 											"name": "quote_given_date",
-											"type": "DateTime"
+											"type": "String"
 										}
 									},
 									{
@@ -722,7 +722,7 @@
 										},
 										"sink": {
 											"name": "quote_valid_date",
-											"type": "DateTime"
+											"type": "String"
 										}
 									}
 								]

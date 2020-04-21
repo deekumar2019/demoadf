@@ -231,7 +231,7 @@
 				"type": "AzureDataExplorerTable",
 				"schema": [],
 				"typeProperties": {
-					"table": "Exeloninput"
+					"table": "ExelonInput"
 				}
 			},
 			"dependsOn": []
