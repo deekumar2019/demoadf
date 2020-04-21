@@ -37,6 +37,84 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/WatermarkDataset_tl')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CloudStreaming_Sqldb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TableName",
+						"type": "varchar"
+					},
+					{
+						"name": "WatermarkValue",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "watermarktable"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adls2_Incrtest')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adls2_incr",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "Incrtest",
+						"fileSystem": "adftutorial"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adls2_storage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADLS_Storage_Southridge",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_MovieCatalog')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -699,13 +777,13 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CopyPipeline_ADX')]",
+			"name": "[concat(parameters('factoryName'), '/CopyPipeline_AdxAddresses')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy_3wm",
+						"name": "Copy_5va",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -718,18 +796,178 @@
 						"userProperties": [
 							{
 								"name": "Source",
-								"value": "inbound-processes//"
+								"value": "inbound-processes//dboAddresses.txt"
 							},
 							{
 								"name": "Destination",
-								"value": "Newblobtable"
+								"value": "Addresses"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 0
+								}
+							},
+							"sink": {
+								"type": "AzureDataExplorerSink",
+								"ingestionMappingName": "Addresses_mapping"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "AddressID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AddressID",
+											"type": "Guid"
+										}
+									},
+									{
+										"source": {
+											"name": "CustomerID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CustomerID",
+											"type": "Guid"
+										}
+									},
+									{
+										"source": {
+											"name": "AddressLine1",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AddressLine1",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AddressLine2",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AddressLine2",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "City",
+											"type": "String"
+										},
+										"sink": {
+											"name": "City",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "State",
+											"type": "String"
+										},
+										"sink": {
+											"name": "State",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ZipCode",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ZipCode",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "CreatedDate",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CreatedDate",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "UpdatedDate",
+											"type": "String"
+										},
+										"sink": {
+											"name": "UpdatedDate",
+											"type": "DateTime"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_5va",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_5va",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyPipeline_BlobADX')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_461",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "landing-zone//"
+							},
+							{
+								"name": "Destination",
+								"value": "ExelonTest"
 							}
 						],
 						"typeProperties": {
 							"source": {
 								"type": "JsonSource",
 								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
+									"type": "AzureBlobStorageReadSettings",
 									"recursive": true,
 									"wildcardFileName": "*"
 								}
@@ -882,174 +1120,14 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "SourceDataset_3wm",
+								"referenceName": "SourceDataset_461",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "DestinationDataset_3wm",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CopyPipeline_AdxAddresses')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_5va",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "inbound-processes//dboAddresses.txt"
-							},
-							{
-								"name": "Destination",
-								"value": "Addresses"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings",
-									"skipLineCount": 0
-								}
-							},
-							"sink": {
-								"type": "AzureDataExplorerSink",
-								"ingestionMappingName": "Addresses_mapping"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "AddressID",
-											"type": "String"
-										},
-										"sink": {
-											"name": "AddressID",
-											"type": "Guid"
-										}
-									},
-									{
-										"source": {
-											"name": "CustomerID",
-											"type": "String"
-										},
-										"sink": {
-											"name": "CustomerID",
-											"type": "Guid"
-										}
-									},
-									{
-										"source": {
-											"name": "AddressLine1",
-											"type": "String"
-										},
-										"sink": {
-											"name": "AddressLine1",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "AddressLine2",
-											"type": "String"
-										},
-										"sink": {
-											"name": "AddressLine2",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "City",
-											"type": "String"
-										},
-										"sink": {
-											"name": "City",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "State",
-											"type": "String"
-										},
-										"sink": {
-											"name": "State",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "ZipCode",
-											"type": "String"
-										},
-										"sink": {
-											"name": "ZipCode",
-											"type": "Int32"
-										}
-									},
-									{
-										"source": {
-											"name": "CreatedDate",
-											"type": "String"
-										},
-										"sink": {
-											"name": "CreatedDate",
-											"type": "DateTime"
-										}
-									},
-									{
-										"source": {
-											"name": "UpdatedDate",
-											"type": "String"
-										},
-										"sink": {
-											"name": "UpdatedDate",
-											"type": "DateTime"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SourceDataset_5va",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DestinationDataset_5va",
+								"referenceName": "DestinationDataset_461",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -1915,555 +1993,6 @@
 						]
 					}
 				],
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CopyPipelinenewjson')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_rjn",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "movies"
-							},
-							{
-								"name": "Destination",
-								"value": "landed/movies/"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "CosmosDbSqlApiSource",
-								"preferredRegions": []
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"path": "$['actors'][0]['name']"
-										},
-										"sink": {
-											"name": "name"
-										}
-									},
-									{
-										"source": {
-											"path": "$['availabilityDate']"
-										},
-										"sink": {
-											"name": "availabilityDate"
-										}
-									},
-									{
-										"source": {
-											"path": "$['genre']"
-										},
-										"sink": {
-											"name": "genre"
-										}
-									},
-									{
-										"source": {
-											"path": "$['rating']"
-										},
-										"sink": {
-											"name": "rating"
-										}
-									},
-									{
-										"source": {
-											"path": "$['releaseYear']"
-										},
-										"sink": {
-											"name": "releaseYear"
-										}
-									},
-									{
-										"source": {
-											"path": "$['runtime']"
-										},
-										"sink": {
-											"name": "runtime"
-										}
-									},
-									{
-										"source": {
-											"path": "$['streamingAvailabilityDate']"
-										},
-										"sink": {
-											"name": "streamingAvailabilityDate"
-										}
-									},
-									{
-										"source": {
-											"path": "$['tier']"
-										},
-										"sink": {
-											"name": "tier"
-										}
-									},
-									{
-										"source": {
-											"path": "$['title']"
-										},
-										"sink": {
-											"name": "title"
-										}
-									},
-									{
-										"source": {
-											"path": "$['id']"
-										},
-										"sink": {
-											"name": "id"
-										}
-									},
-									{
-										"source": {
-											"path": "$['_rid']"
-										},
-										"sink": {
-											"name": "_rid"
-										}
-									},
-									{
-										"source": {
-											"path": "$['_self']"
-										},
-										"sink": {
-											"name": "_self"
-										}
-									},
-									{
-										"source": {
-											"path": "$['_etag']"
-										},
-										"sink": {
-											"name": "_etag"
-										}
-									},
-									{
-										"source": {
-											"path": "$['_attachments']"
-										},
-										"sink": {
-											"name": "_attachments"
-										}
-									},
-									{
-										"source": {
-											"path": "$['_ts']"
-										},
-										"sink": {
-											"name": "_ts"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SourceDataset_rjn",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DestinationDataset_rjn",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/IncrementalCopyPipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "LookupOldWaterMarkActivity",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource"
-							},
-							"dataset": {
-								"referenceName": "WatermarkDataset",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": true
-						}
-					},
-					{
-						"name": "LookupNewWaterMarkActivity",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": "select MAX(LastModifytime) as NewWatermarkvalue from customer_table"
-							},
-							"dataset": {
-								"referenceName": "Cloudsales",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": true
-						}
-					},
-					{
-						"name": "IncrCopyActivity",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "LookupNewWaterMarkActivity",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "LookupOldWaterMarkActivity",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "select * from customer_table where LastModifytime > '@{activity('LookupOldWaterMarkActivity').output.firstRow.WatermarkValue}' and LastModifytime <= '@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}'",
-									"type": "Expression"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": {
-										"value": "@{CONCAT('Incremental-', activity('LookupOldWaterMarkActivity').output.firstRow.TableName, '.txt')}",
-										"type": "Expression"
-									}
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Cloudsales",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "adls2_Incrtest",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "StoredProceduretoWriteWatermarkActivity",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "IncrCopyActivity",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_write_watermark]",
-							"storedProcedureParameters": {
-								"LastModifiedtime": {
-									"value": {
-										"value": "@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}",
-										"type": "Expression"
-									},
-									"type": "DateTime"
-								},
-								"TableName": {
-									"value": {
-										"value": "@{activity('LookupOldWaterMarkActivity').output.firstRow.TableName}",
-										"type": "Expression"
-									},
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "Cloudsales_Sqldb",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/IncrementalCopyPipeline_tl')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "IterateSQLTables",
-						"type": "ForEach",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@pipeline().parameters.tableList",
-								"type": "Expression"
-							},
-							"isSequential": true,
-							"activities": [
-								{
-									"name": "LookupOldWaterMarkActivity",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzureSqlSource",
-											"sqlReaderQuery": {
-												"value": "select * from watermarktable where TableName  =  '@{item().TABLE_NAME}'",
-												"type": "Expression"
-											}
-										},
-										"dataset": {
-											"referenceName": "WatermarkDataset_tl",
-											"type": "DatasetReference",
-											"parameters": {}
-										},
-										"firstRowOnly": true
-									}
-								},
-								{
-									"name": "LookupNewWaterMarkActivity",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzureSqlSource",
-											"sqlReaderQuery": {
-												"value": "select MAX(@{item().WaterMark_Column}) as NewWatermarkvalue from @{item().TABLE_NAME}",
-												"type": "Expression"
-											}
-										},
-										"dataset": {
-											"referenceName": "Sourcedataset_tl",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									}
-								},
-								{
-									"name": "IncrCopyActivity",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "LookupOldWaterMarkActivity",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										},
-										{
-											"activity": "LookupNewWaterMarkActivity",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzureSqlSource",
-											"sqlReaderQuery": {
-												"value": "select * from @{item().TABLE_NAME} where @{item().WaterMark_Column} > '@{activity('LookupOldWaterMarkActivity').output.firstRow.WatermarkValue}' and @{item().WaterMark_Column} <= '@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}'        ",
-												"type": "Expression"
-											}
-										},
-										"sink": {
-											"type": "AzureSqlSink",
-											"sqlWriterStoredProcedureName": {
-												"value": "@{item().StoredProcedureNameForMergeOperation}",
-												"type": "Expression"
-											},
-											"sqlWriterTableType": {
-												"value": "@{item().TableType}",
-												"type": "Expression"
-											},
-											"storedProcedureTableTypeParameterName": {
-												"value": "@{item().TABLE_NAME}",
-												"type": "Expression"
-											},
-											"disableMetricsCollection": false
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "Sourcedataset_tl",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "SinkDataset",
-											"type": "DatasetReference",
-											"parameters": {
-												"SinkTableName": "@{item().TABLE_NAME}"
-											}
-										}
-									]
-								},
-								{
-									"name": "StoredProceduretoWriteWatermarkActivity",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "IncrCopyActivity",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[usp_write_watermark]",
-										"storedProcedureParameters": {
-											"LastModifiedtime": {
-												"value": {
-													"value": "@{activity('LookupNewWaterMarkActivity').output.firstRow.NewWatermarkvalue}",
-													"type": "Expression"
-												},
-												"type": "DateTime"
-											},
-											"TableName": {
-												"value": {
-													"value": "@{activity('LookupOldWaterMarkActivity').output.firstRow.TableName}",
-													"type": "Expression"
-												},
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "CloudStreaming_Sqldb",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					}
-				],
-				"parameters": {
-					"tableList": {
-						"type": "array"
-					}
-				},
 				"annotations": []
 			},
 			"dependsOn": []

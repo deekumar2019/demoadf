@@ -11,6 +11,9 @@
 		"ADLS_Storage_Southridge_connectionString": {
 			"value": ""
 		},
+		"ADX_BlobStorage_connectionString": {
+			"value": ""
+		},
 		"AzureDataExplorer1_servicePrincipalKey": {
 			"value": ""
 		},

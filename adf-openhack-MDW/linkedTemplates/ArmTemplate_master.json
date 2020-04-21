@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ADLS_Storage_Southridge'"
 		},
+		"ADX_BlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ADX_BlobStorage'"
+		},
 		"AzureDataExplorer1_servicePrincipalKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalKey' of 'AzureDataExplorer1'"
@@ -167,6 +171,9 @@
 					},
 					"ADLS_Storage_Southridge_connectionString": {
 						"value": "[parameters('ADLS_Storage_Southridge_connectionString')]"
+					},
+					"ADX_BlobStorage_connectionString": {
+						"value": "[parameters('ADX_BlobStorage_connectionString')]"
 					},
 					"AzureDataExplorer1_servicePrincipalKey": {
 						"value": "[parameters('AzureDataExplorer1_servicePrincipalKey')]"
