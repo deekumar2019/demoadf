@@ -584,7 +584,7 @@
 							},
 							"sink": {
 								"type": "AzureDataExplorerSink",
-								"ingestionMappingName": "ExelonInput_mapping"
+								"ingestionMappingName": "ExelonTest_mapping"
 							},
 							"enableStaging": false,
 							"translator": {

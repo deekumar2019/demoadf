@@ -706,7 +706,7 @@
 							},
 							"sink": {
 								"type": "AzureDataExplorerSink",
-								"ingestionMappingName": "ExelonInput_mapping"
+								"ingestionMappingName": "ExelonTest_mapping"
 							},
 							"enableStaging": false,
 							"translator": {
@@ -3845,7 +3845,7 @@
 				"type": "AzureDataExplorerTable",
 				"schema": [],
 				"typeProperties": {
-					"table": "ExelonInput"
+					"table": "ExelonTest"
 				}
 			},
 			"dependsOn": [
@@ -5071,6 +5071,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"folderPath": "2020/04",
 						"fileSystem": "inbound-processes"
 					}
 				},
