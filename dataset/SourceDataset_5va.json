@@ -1,0 +1,51 @@
+{
+	"name": "SourceDataset_5va",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adx_storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "dboAddresses.txt",
+				"fileSystem": "inbound-processes"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "AddressID"
+			},
+			{
+				"name": "CustomerID"
+			},
+			{
+				"name": "AddressLine1"
+			},
+			{
+				"name": "AddressLine2"
+			},
+			{
+				"name": "City"
+			},
+			{
+				"name": "State"
+			},
+			{
+				"name": "ZipCode"
+			},
+			{
+				"name": "CreatedDate"
+			},
+			{
+				"name": "UpdatedDate"
+			}
+		]
+	}
+}
