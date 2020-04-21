@@ -33,7 +33,8 @@
 						}
 					},
 					"sink": {
-						"type": "AzureDataExplorerSink"
+						"type": "AzureDataExplorerSink",
+						"ingestionMappingName": "Exeloninput_mapping"
 					},
 					"enableStaging": false,
 					"translator": {
@@ -45,7 +46,7 @@
 								},
 								"sink": {
 									"name": "quote_id",
-									"type": "DateTime"
+									"type": "String"
 								}
 							},
 							{
