@@ -1,0 +1,67 @@
+{
+	"name": "SourceDataset_3wm",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adx_storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "inbound-processes"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"quote_id": {
+					"type": "string"
+				},
+				"policy_id": {
+					"type": "string"
+				},
+				"tel_1": {
+					"type": "string"
+				},
+				"tel_2": {
+					"type": "string"
+				},
+				"email_1": {
+					"type": "string"
+				},
+				"geo_street_1": {
+					"type": "string"
+				},
+				"geo_street_2": {
+					"type": "string"
+				},
+				"geo_street_3": {
+					"type": "string"
+				},
+				"geo_town": {
+					"type": "string"
+				},
+				"geo_postcode": {
+					"type": "string"
+				},
+				"geo_country_code": {
+					"type": "string"
+				},
+				"quote_value": {
+					"type": "string"
+				},
+				"quote_currency": {
+					"type": "string"
+				},
+				"quote_given_date": {
+					"type": "string"
+				},
+				"quote_valid_date": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
