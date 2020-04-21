@@ -583,7 +583,8 @@
 								}
 							},
 							"sink": {
-								"type": "AzureDataExplorerSink"
+								"type": "AzureDataExplorerSink",
+								"ingestionMappingName": "Exeloninput_mapping"
 							},
 							"enableStaging": false,
 							"translator": {
