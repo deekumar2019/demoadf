@@ -717,7 +717,7 @@
 										},
 										"sink": {
 											"name": "quote_id",
-											"type": "DateTime"
+											"type": "String"
 										}
 									},
 									{
@@ -3844,7 +3844,7 @@
 				"type": "AzureDataExplorerTable",
 				"schema": [],
 				"typeProperties": {
-					"table": "Newblobtable"
+					"table": "Exeloninput"
 				}
 			},
 			"dependsOn": [

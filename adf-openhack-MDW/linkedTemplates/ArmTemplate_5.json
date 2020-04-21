@@ -595,7 +595,7 @@
 										},
 										"sink": {
 											"name": "quote_id",
-											"type": "DateTime"
+											"type": "String"
 										}
 									},
 									{
