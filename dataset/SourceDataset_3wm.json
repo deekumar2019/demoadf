@@ -2,16 +2,15 @@
 	"name": "SourceDataset_3wm",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adx_storage",
+			"referenceName": "ADX_BlobStorage",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation",
-				"folderPath": "2020/04",
-				"fileSystem": "inbound-processes"
+				"type": "AzureBlobStorageLocation",
+				"container": "landing-zone"
 			}
 		},
 		"schema": {

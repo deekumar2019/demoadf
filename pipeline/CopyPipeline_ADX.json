@@ -27,9 +27,8 @@
 					"source": {
 						"type": "JsonSource",
 						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"wildcardFileName": "*"
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
 						}
 					},
 					"sink": {
