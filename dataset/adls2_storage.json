@@ -2,14 +2,16 @@
 	"name": "adls2_storage",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ADLS_Storage_Southridge",
+			"referenceName": "ADLS2_MDW",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation"
+				"type": "AzureBlobFSLocation",
+				"fileName": "data_e9c08d5a-ef57-429f-825e-43facddef9e5_caac6bc4-7671-4637-b0a2-1f105532d4ec.json",
+				"fileSystem": "movies"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
